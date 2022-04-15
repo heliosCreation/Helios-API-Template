@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -22,24 +23,26 @@ namespace Template.Identity.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly AppIdentityDbContext _context;
         private readonly JwtSettings _jwtSettings;
 
         public AuthenticationService(
             UserManager<ApplicationUser> userManager,
             IOptions<JwtSettings> jwtSettings,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            AppIdentityDbContext context)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
             _signInManager = signInManager;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
 
         public async Task<ApiResponse<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request)
         {
             var response = new ApiResponse<AuthenticationResponse>();
-            var user = await _userManager.FindByEmailAsync(request.Email);
-
+            var user = await _context.Users.Where(u => u.Email == request.Email).FirstOrDefaultAsync();
             if (user == null)
             {
                 return response.SetUnhautorizedResponse();

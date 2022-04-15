@@ -15,7 +15,7 @@ using Template.Identity;
 using Template.Infrastructure;
 using Template.Persistence;
 
-namespace GloboEvent.API
+namespace Template.API
 {
     public class Startup
     {
@@ -66,16 +66,16 @@ namespace GloboEvent.API
             }
 
             app.UseHttpsRedirection();
+            app.UseRouting();
 
             app.UseAuthentication();
-            app.UseRouting();
             app.UseAuthorization();
 
             app.UseSwagger();
             app.UseSwaggerUI(opt =>
             {
-                opt.SwaggerEndpoint("/swagger/v1/swagger.json", "Globo Event Api");
-                opt.RoutePrefix = "";
+                opt.SwaggerEndpoint("/swagger/v1/swagger.json", "Template Api");
+                opt.RoutePrefix = "swagger";
             });
 
             app.UseCors("Open");

@@ -37,6 +37,7 @@ namespace Template.Application.Responses
         {
             Succeeded = false;
             StatusCode = (int)HttpStatusCode.Unauthorized;
+            ErrorMessages.Add("You're not allowed to access this resource.");
             return this;
         }
         public ApiResponse<T> SetInternalServerErrorResponse()

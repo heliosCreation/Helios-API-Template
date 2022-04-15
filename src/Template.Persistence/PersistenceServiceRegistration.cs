@@ -11,7 +11,7 @@ namespace Template.Persistence
         public static IServiceCollection AddPersistenceService(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(
-                opt => opt.UseSqlServer(configuration.GetConnectionString("GloboEventDataConnectionString"),
+                opt => opt.UseSqlServer(configuration.GetConnectionString("DataConnectionString"),
                 b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName))
             );
 
