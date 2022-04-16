@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Template.API.Contract;
@@ -6,11 +8,13 @@ using Template.Application.Contracts.Identity;
 using Template.Application.Contracts.Infrastructure;
 using Template.Application.Features.Account.Command;
 using Template.Application.Model.Account.Authentification;
+using Template.Application.Models.Account.RefreshToken;
 
 namespace Template.API.Controllers
 {
     using static ApiRoutes.Account;
-
+    
+    [AllowAnonymous]
     public class AccountController : ApiController
     {
         private readonly IAuthenticationService _authenticationService;
@@ -25,26 +29,19 @@ namespace Template.API.Controllers
         [HttpPost(Authenticate)]
         public async Task<ActionResult<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request)
         {
-            var x = await _authenticationService.AuthenticateAsync(request);
-            return Ok(x);
+            var response = await _authenticationService.AuthenticateAsync(request);
+            setTokenCookie(response.Data.RefreshToken);
+            return Ok(response);
         }
 
-        //[HttpPost(Register)]
-        //public async Task<IActionResult> RegisterdddddAsync(RegistrationModel request)
-        //{
-        //    var response = await _authenticationService.RegisterAsync(request);
-        //    if (response.Succeeded)
-        //    {
-        //        var code = await _authenticationService.GenerateRegistrationEncodedToken(response.Data.UserId);
-        //        var callbackLink = Url.ActionLink("ConfirmEmail", "Account", new { Email = request.Email, code = code });
 
-        //        await _emailService.SendRegistrationMail(request.Email, callbackLink);
-        //        response.Data.callbackURL = callbackLink;
-        //    }
-        //    return Ok(response);
-        //}
-
-
+        [HttpPost(Refresh)]
+        public async Task<ActionResult<AuthenticationResponse>> RefreshTokenAsync(RefreshTokenRequest request)
+        {
+            var response = await _authenticationService.RefreshTokenAsync(request);
+            
+            return Ok(response);
+        }
 
         [HttpPost(Register)]
         public async Task<IActionResult> RegisterAsync(RegisterUserCommand command)
@@ -66,5 +63,19 @@ namespace Template.API.Controllers
             var response = await _authenticationService.ConfirmEmail(email, code);
             return Ok(response);
         }
+
+
+        //Helper methods
+
+        private void setTokenCookie(string token)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
+        }
+
     }
 }

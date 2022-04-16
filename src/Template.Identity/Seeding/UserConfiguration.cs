@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using Template.Identity.Models;
+using Template.Identity.Entities;
 
 namespace Template.Identity.Seeding
 {
