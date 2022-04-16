@@ -192,7 +192,7 @@ namespace Template.Identity.Services
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+                expires: DateTime.UtcNow.Add(_jwtSettings.TokenLifetime),
                 signingCredentials: signingCredentials);
             return jwtSecurityToken;
         }
