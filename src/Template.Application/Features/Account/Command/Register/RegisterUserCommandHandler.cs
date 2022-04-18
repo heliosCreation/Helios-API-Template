@@ -9,28 +9,23 @@ using Template.Application.Responses;
 
 namespace Template.Application.Features.Account.Command.Register
 {
-    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, ApiResponse<RegisterUserResponse>>
+    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, ApiResponse<RegistrationResponse>>
     {
         private readonly IAuthenticationService _authenticationService;
-        private readonly IEmailService _emailService;
 
-
-        public RegisterUserCommandHandler(
-            IAuthenticationService authenticationService,
-            IEmailService emailService)
+        public RegisterUserCommandHandler(IAuthenticationService authenticationService)
         {
             _authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
-            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
-        public async Task<ApiResponse<RegisterUserResponse>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<RegistrationResponse>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            var response = new ApiResponse<RegisterUserResponse>();
+            var response = new ApiResponse<RegistrationResponse>();
             var result = await _authenticationService.RegisterAsync(request);
             if (!result.Succeeded)
             {
-                return response.SetBadRequestResponse(null, result.Errors.ToList());
+                return response.SetBadRequestResponse(errors:result.Errors.ToList());
             }
-            response.Data = new RegisterUserResponse { UserId = result.UserId };
+            response.Data = new RegistrationResponse { UserId = result.UserId };
             return response;
         }
     }

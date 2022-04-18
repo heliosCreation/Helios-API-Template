@@ -106,7 +106,7 @@ namespace Template.Identity.Services
 
             return response;
         }
-        public async Task<CustomIdentityResult> RegisterAsync(RegisterUserCommand command)
+        public async Task<RegistrationResponse> RegisterAsync(RegisterUserCommand command)
         {
             var user = new ApplicationUser
             {
@@ -119,9 +119,9 @@ namespace Template.Identity.Services
             var result = await _userManager.CreateAsync(user, command.Password);
             if (!result.Succeeded)
             {
-                return new CustomIdentityResult(result.Errors.Select(e => e.Description).ToList());
+                return new RegistrationResponse(result.Errors.Select(e => e.Description).ToList());
             }
-            return new CustomIdentityResult(user.Id);
+            return new RegistrationResponse(user.Id);
         }
         public async Task<string> GenerateRegistrationEncodedToken(string id)
         {

@@ -9,7 +9,6 @@ using Template.Application.Contracts.Infrastructure;
 using Template.Application.Features.Account.Command.Authenticate;
 using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
-using Template.Application.Models.Account.RefreshToken;
 
 namespace Template.API.Controllers
 {
@@ -60,7 +59,7 @@ namespace Template.API.Controllers
                 var callbackLink = Url.ActionLink("ConfirmEmail", "Account", new { Email = command.Email, code = code });
 
                 await _emailService.SendRegistrationMail(command.Email, callbackLink);
-                response.Data.CallbackUrl = callbackLink;
+                response.Data.CallBackUrl = callbackLink;
             }
             return Ok(response);
         }

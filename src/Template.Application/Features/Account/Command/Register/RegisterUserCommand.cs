@@ -3,7 +3,7 @@ using Template.Application.Responses;
 
 namespace Template.Application.Features.Account.Command.Register
 {
-    public class RegisterUserCommand : IRequest<ApiResponse<RegisterUserResponse>>
+    public class RegisterUserCommand : IRequest<ApiResponse<RegistrationResponse>>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
