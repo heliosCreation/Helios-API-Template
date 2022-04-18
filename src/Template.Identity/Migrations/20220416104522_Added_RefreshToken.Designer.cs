@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Template.Identity;
 
 namespace Template.Identity.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220416104522_Added_RefreshToken")]
+    partial class Added_RefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,28 +51,28 @@ namespace Template.Identity.Migrations
                         new
                         {
                             Id = "01B168FE-810B-432D-9010-233BA0B380E9",
-                            ConcurrencyStamp = "8a09f456-bc36-4f2b-ae0c-399f395ac6eb",
+                            ConcurrencyStamp = "8bf86748-b1b2-46a6-b107-cf6edb30842c",
                             Name = "Basic",
                             NormalizedName = "BASIC"
                         },
                         new
                         {
                             Id = "78A7570F-3CE5-48BA-9461-80283ED1D94D",
-                            ConcurrencyStamp = "1113f398-4c60-4f4a-8d14-efb55a58d578",
+                            ConcurrencyStamp = "1fb642a1-a688-440b-99d8-6317eda92ff3",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
                             Id = "7D9B7113-A8F8-4035-99A7-A20DD400F6A3",
-                            ConcurrencyStamp = "92e19c9c-7ace-4526-8de1-2a698af6197e",
+                            ConcurrencyStamp = "f8e0389e-9b6c-47f7-af9f-179f1864c2e5",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "2301D884-221A-4E7D-B509-0113DCC043E1",
-                            ConcurrencyStamp = "6f3aeb5c-ab67-4e96-8a37-c3c7bc2b1b44",
+                            ConcurrencyStamp = "49e18086-b9d0-4040-90ba-d6d44dc73937",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         });
@@ -267,7 +269,7 @@ namespace Template.Identity.Migrations
                         {
                             Id = "f1aafc30-5e54-4550-a5a1-4df0704b3258",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8f777617-1fa0-4ee2-8a52-f503e7e78f7c",
+                            ConcurrencyStamp = "39e48427-d81e-4686-887f-f05fd08c73e7",
                             Email = "SuperAdmin@Admin.com",
                             EmailConfirmed = true,
                             FirstName = "Master",
@@ -275,7 +277,7 @@ namespace Template.Identity.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "MASTERADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOKWpqzAOB4ZdxLUAcEn0Qes9rV3H/A6w2ebHXzt6ZagebOqipcDRuZkYEIuD8E8VA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOKTb+NyPdJcvZPYg4pgqZDcG+2pLdxw/1IU4sJPSdM57GjBkPhy1PyJkeXAOzlGKw==",
                             PhoneNumber = "XXXXXXXXXXXXX",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "00000000-0000-0000-0000-000000000000",
@@ -286,7 +288,7 @@ namespace Template.Identity.Migrations
                         {
                             Id = "9f93e84d-bcfe-4dab-9ba7-cb7065a63524",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2b229ea7-ec00-42db-a286-7083b0938c61",
+                            ConcurrencyStamp = "94fd9e97-c6b4-407d-9984-3d1a258d6f54",
                             Email = "john@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -294,7 +296,7 @@ namespace Template.Identity.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "JOHN@GMAIL.COM",
                             NormalizedUserName = "JOHN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPnhm3XK5+bfE7DlpgeLK35KBUfGZVXXmpVaschJJFI2zCa4CA+OAI5MMzo6L1zrgw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDAwWdB3CfwXL4D2leEwiyTLDgU+iagsaCP2vhZh4iKpRQf4Bipt+qFLVh+JFOZK6Q==",
                             PhoneNumberConfirmed = true,
                             SecurityStamp = "00000000-0000-0000-0000-000000000000",
                             TwoFactorEnabled = false,
@@ -305,7 +307,6 @@ namespace Template.Identity.Migrations
             modelBuilder.Entity("Template.Identity.Entities.RefreshToken", b =>
                 {
                     b.Property<string>("Token")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreationDate")

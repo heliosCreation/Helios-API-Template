@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using Template.Identity.Models;
+using Template.Identity.Entities;
 
 namespace Template.Identity
 {
@@ -16,5 +16,7 @@ namespace Template.Identity
             base.OnModelCreating(builder);
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

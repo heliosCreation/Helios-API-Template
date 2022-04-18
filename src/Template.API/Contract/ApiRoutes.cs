@@ -48,6 +48,8 @@
             public const string EndpointBase = Base + Controller + "/";
 
             public const string Authenticate = EndpointBase + "authenticate";
+            
+            public const string Refresh = EndpointBase + "refresh";
 
             public const string Register = EndpointBase + "register";
 

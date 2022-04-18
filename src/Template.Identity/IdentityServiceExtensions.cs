@@ -10,7 +10,7 @@ using System;
 using System.Text;
 using Template.Application.Contracts.Identity;
 using Template.Application.Model.Account;
-using Template.Identity.Models;
+using Template.Identity.Entities;
 using Template.Identity.Services;
 
 namespace Template.Identity
@@ -28,7 +28,23 @@ namespace Template.Identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedEmail = true)
                 .AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
 
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<ITokenUtils, TokenUtilsService>();
+
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                ValidIssuer = configuration["JwtSettings:Issuer"],
+                ValidAudience = configuration["JwtSettings:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]))
+            };
+
+            services.AddSingleton(tokenValidationParameters);
 
             services.AddAuthentication(options =>
             {
@@ -39,20 +55,12 @@ namespace Template.Identity
                 {
                     o.RequireHttpsMetadata = false;
                     o.SaveToken = false;
-                    o.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = configuration["JwtSettings:Issuer"],
-                        ValidAudience = configuration["JwtSettings:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]))
-                    };
+                    o.TokenValidationParameters = tokenValidationParameters;
 
                     o.Events = new JwtBearerEvents()
                     {
+                       
+                        
                         OnAuthenticationFailed = c =>
                         {
                             c.NoResult();
