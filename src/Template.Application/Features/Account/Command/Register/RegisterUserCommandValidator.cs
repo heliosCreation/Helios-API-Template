@@ -42,6 +42,9 @@ namespace Template.Application.Features.Account.Command.Register
                 .NotNull()
                 .MaximumLength(120);
 
+            RuleFor(c => c.ConfirmationPassword)
+                .Equal(c => c.Password);
+
             RuleFor(e => e)
             .MustAsync(IsNameUnique).WithMessage("Username already taken.")
             .MustAsync(IsEmailUnique).WithMessage("Email already taken.");

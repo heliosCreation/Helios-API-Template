@@ -14,6 +14,7 @@ using Template.Application.Features.Account.Command.Authenticate;
 using Template.Application.Features.Account.Command.ConfirmEmail;
 using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
+using Template.Application.Features.Account.Command.RegistrationToken;
 using Template.Application.Model.Account;
 using Template.Application.Responses;
 using Template.Identity.Entities;
@@ -124,11 +125,15 @@ namespace Template.Identity.Services
             }
             return new RegistrationResponse(user.Id);
         }
-        public async Task<string> GenerateRegistrationEncodedToken(string id)
+        public async Task<RegistrationTokenResponse> GenerateRegistrationEncodedToken(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return new RegistrationTokenResponse(error: $"User with ID {id} was not found");
+            }
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            return new RegistrationTokenResponse() {Token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code)) };
         }
         public async Task<ApiResponse<object>> ConfirmEmail(ConfirmEmailCommand request)
         {
