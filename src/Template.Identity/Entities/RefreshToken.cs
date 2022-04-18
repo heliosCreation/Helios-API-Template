@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Template.Application.Contracts.Identity;
 
 namespace Template.Identity.Entities
 {
-    public class RefreshToken
+    public class RefreshToken : IRefreshToken
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

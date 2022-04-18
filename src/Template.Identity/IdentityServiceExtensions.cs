@@ -28,7 +28,8 @@ namespace Template.Identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedEmail = true)
                 .AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
 
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<ITokenUtils, TokenUtilsService>();
 
 
             var tokenValidationParameters = new TokenValidationParameters

@@ -30,7 +30,10 @@ namespace Template.API.Controllers
         public async Task<ActionResult<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request)
         {
             var response = await _authenticationService.AuthenticateAsync(request);
-            setTokenCookie(response.Data.RefreshToken);
+            if (response.Succeeded)
+            {
+                setTokenCookie(response.Data.RefreshToken);
+            }
             return Ok(response);
         }
 
@@ -39,7 +42,10 @@ namespace Template.API.Controllers
         public async Task<ActionResult<AuthenticationResponse>> RefreshTokenAsync(RefreshTokenRequest request)
         {
             var response = await _authenticationService.RefreshTokenAsync(request);
-            
+            if (response.Succeeded)
+            {
+                setTokenCookie(response.Data.RefreshToken);
+            }
             return Ok(response);
         }
 
