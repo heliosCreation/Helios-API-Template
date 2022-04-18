@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Template.API.Contract;
 using Template.Application.Contracts.Identity;
 using Template.Application.Contracts.Infrastructure;
-using Template.Application.Features.Account.Command;
+using Template.Application.Features.Account.Command.Register;
 using Template.Application.Model.Account.Authentification;
 using Template.Application.Models.Account.RefreshToken;
 

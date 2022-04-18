@@ -7,7 +7,7 @@ using Template.Application.Contracts.Identity;
 using Template.Application.Contracts.Infrastructure;
 using Template.Application.Responses;
 
-namespace Template.Application.Features.Account.Command
+namespace Template.Application.Features.Account.Command.Register
 {
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, ApiResponse<RegisterUserResponse>>
     {

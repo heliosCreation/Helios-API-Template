@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Template.Application.Features.Account.Command;
+using Template.Application.Features.Account.Command.Register;
 using Template.Application.Model.Account;
 using Template.Application.Model.Account.Authentification;
 using Template.Application.Models.Account.RefreshToken;

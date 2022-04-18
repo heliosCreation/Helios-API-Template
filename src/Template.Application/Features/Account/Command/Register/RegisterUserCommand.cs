@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Template.Application.Responses;
 
-namespace Template.Application.Features.Account.Command
+namespace Template.Application.Features.Account.Command.Register
 {
     public class RegisterUserCommand : IRequest<ApiResponse<RegisterUserResponse>>
     {

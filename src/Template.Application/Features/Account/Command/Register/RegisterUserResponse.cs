@@ -1,4 +1,4 @@
-﻿namespace Template.Application.Features.Account.Command
+﻿namespace Template.Application.Features.Account.Command.Register
 {
     public class RegisterUserResponse
     {

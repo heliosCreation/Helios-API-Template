@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Template.Application.Contracts.Identity;
 
-namespace Template.Application.Features.Account.Command
+namespace Template.Application.Features.Account.Command.Register
 {
 
     public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
