@@ -9,8 +9,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Application.Contracts.Identity;
+using Template.Application.Features.Account;
 using Template.Application.Model.Account;
-using Template.Application.Model.Account.Authentification;
 using Template.Application.Responses;
 using Template.Identity.Entities;
 

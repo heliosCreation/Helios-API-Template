@@ -4,16 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Application.Contracts.Identity;
+using Template.Application.Features.Account;
+using Template.Application.Features.Account.Command.Authenticate;
 using Template.Application.Features.Account.Command.Register;
 using Template.Application.Model.Account;
-using Template.Application.Model.Account.Authentification;
 using Template.Application.Models.Account.RefreshToken;
 using Template.Application.Responses;
 using Template.Identity.Entities;
@@ -47,23 +46,25 @@ namespace Template.Identity.Services
         }
 
 
-        public async Task<ApiResponse<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request)
+        public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticateCommand request)
         {
-            var response = new ApiResponse<AuthenticationResponse>();
+            var response = new AuthenticationResponse();
             var user = await _context.Users.Where(u => u.Email == request.Email).FirstOrDefaultAsync();
             if (user == null)
             {
-                return response.SetUnhautorizedResponse();
+                response.IsSuccess = false;
+                return response;
             }
 
             var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
             {
-                return response.SetUnhautorizedResponse();
+                response.IsSuccess = false;
+                return response;
             }
 
-            response.Data = await _tokenUtils.GenerateAuthenticationResponseForUserAsync(user.Id, _jwtSettings);
+            response = await _tokenUtils.GenerateAuthenticationResponseForUserAsync(user.Id, _jwtSettings);
 
             return response;
         }
@@ -96,7 +97,7 @@ namespace Template.Identity.Services
             await _context.SaveChangesAsync();
 
             var user = await _userManager.FindByIdAsync(claimPrincipals.Claims.Single(c => c.Type == "uid").Value);
-            response.Data =  await _tokenUtils.GenerateAuthenticationResponseForUserAsync(user.Id, _jwtSettings);
+            response.Data = await _tokenUtils.GenerateAuthenticationResponseForUserAsync(user.Id, _jwtSettings);
 
             return response;
         }

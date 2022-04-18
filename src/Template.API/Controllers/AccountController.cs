@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using Template.API.Contract;
 using Template.Application.Contracts.Identity;
 using Template.Application.Contracts.Infrastructure;
+using Template.Application.Features.Account.Command.Authenticate;
 using Template.Application.Features.Account.Command.Register;
-using Template.Application.Model.Account.Authentification;
 using Template.Application.Models.Account.RefreshToken;
 
 namespace Template.API.Controllers
 {
     using static ApiRoutes.Account;
-    
+
     [AllowAnonymous]
     public class AccountController : ApiController
     {
@@ -27,9 +27,9 @@ namespace Template.API.Controllers
         }
 
         [HttpPost(Authenticate)]
-        public async Task<IActionResult> AuthenticateAsync(AuthenticationRequest request)
+        public async Task<IActionResult> AuthenticateAsync(AuthenticateCommand request)
         {
-            var response = await _authenticationService.AuthenticateAsync(request);
+            var response = await Mediator.Send(request);
             if (response.Succeeded)
             {
                 setTokenCookie(response.Data.RefreshToken);
