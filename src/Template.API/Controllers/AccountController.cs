@@ -27,7 +27,7 @@ namespace Template.API.Controllers
         }
 
         [HttpPost(Authenticate)]
-        public async Task<ActionResult<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request)
+        public async Task<IActionResult> AuthenticateAsync(AuthenticationRequest request)
         {
             var response = await _authenticationService.AuthenticateAsync(request);
             if (response.Succeeded)
@@ -39,7 +39,7 @@ namespace Template.API.Controllers
 
 
         [HttpPost(Refresh)]
-        public async Task<ActionResult<AuthenticationResponse>> RefreshTokenAsync(RefreshTokenRequest request)
+        public async Task<IActionResult> RefreshTokenAsync(RefreshTokenRequest request)
         {
             var response = await _authenticationService.RefreshTokenAsync(request);
             if (response.Succeeded)
@@ -52,16 +52,16 @@ namespace Template.API.Controllers
         [HttpPost(Register)]
         public async Task<IActionResult> RegisterAsync(RegisterUserCommand command)
         {
-            var result = await Mediator.Send(command);
-            if (result.Succeeded)
+            var response = await Mediator.Send(command);
+            if (response.Succeeded)
             {
-                var code = await _authenticationService.GenerateRegistrationEncodedToken(result.Data.UserId);
+                var code = await _authenticationService.GenerateRegistrationEncodedToken(response.Data.UserId);
                 var callbackLink = Url.ActionLink("ConfirmEmail", "Account", new { Email = command.Email, code = code });
 
                 await _emailService.SendRegistrationMail(command.Email, callbackLink);
-                result.Data.CallbackUrl = callbackLink;
+                response.Data.CallbackUrl = callbackLink;
             }
-            return Ok(result);
+            return Ok(response);
         }
         [HttpGet(ConfirmEmail)]
         public async Task<IActionResult> ConfirmEmailAsync(string email, string code)
