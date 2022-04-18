@@ -40,11 +40,18 @@ namespace Template.Application.Responses
             ErrorMessages.Add("You're not allowed to access this resource.");
             return this;
         }
-        public ApiResponse<T> SetInternalServerErrorResponse()
+        public ApiResponse<T> SetInternalServerErrorResponse(string message = null)
         {
             Succeeded = false;
             StatusCode = (int)HttpStatusCode.InternalServerError;
-            ErrorMessages.Add("An error occured while processing your request. If the problem persist, try to contact your administrator.");
+            if (message == null)
+            {
+                ErrorMessages.Add("An error occured while processing your request. If the problem persist, try to contact your administrator.");
+            }
+            else
+            {
+                ErrorMessages.Add(message);
+            }
             return this;
         }
     }

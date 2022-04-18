@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Template.API.Contract;
-using Template.Application.Contracts.Identity;
-using Template.Application.Contracts.Infrastructure;
 using Template.Application.Features.Account.Command.Authenticate;
 using Template.Application.Features.Account.Command.ConfirmEmail;
 using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
 using Template.Application.Features.Account.Command.RegistrationToken;
+using Template.Application.Features.Account.Command.SendRegistrationMail;
 
 namespace Template.API.Controllers
 {
@@ -19,13 +18,8 @@ namespace Template.API.Controllers
     [AllowAnonymous]
     public class AccountController : ApiController
     {
-        private readonly IAuthenticationService _authenticationService;
-        private readonly IEmailService _emailService;
-
-        public AccountController(IAuthenticationService authenticationService, IEmailService emailService)
+        public AccountController()
         {
-            _authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
-            _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
 
         [HttpPost(Authenticate)]
@@ -60,11 +54,16 @@ namespace Template.API.Controllers
                 var tokenResponse = await Mediator.Send(new RegistrationTokenCommand(registrationResponse.Data.UserId));
                 if (!tokenResponse.Succeeded)
                 {
-                    return Ok(registrationResponse.setNotFoundResponse(message:tokenResponse.Message));
+                    return Ok(registrationResponse.setNotFoundResponse(message: tokenResponse.ErrorMessages[0]));
                 }
                 var callbackLink = Url.ActionLink("ConfirmEmail", "Account", new { Email = request.Email, code = tokenResponse.Data.Token });
 
-                await _emailService.SendRegistrationMail(request.Email, callbackLink);
+                var mailResponse = await Mediator.Send(new SendRegistrationMailCommand(request.Email, callbackLink));
+                if (!mailResponse.Succeeded)
+                {
+                    registrationResponse.SetInternalServerErrorResponse(message: mailResponse.ErrorMessages[0]);
+                    return Ok(registrationResponse);
+                }
                 registrationResponse.Data.CallBackUrl = callbackLink;
             }
             return Ok(registrationResponse);
