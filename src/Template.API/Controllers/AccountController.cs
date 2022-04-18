@@ -7,6 +7,7 @@ using Template.API.Contract;
 using Template.Application.Contracts.Identity;
 using Template.Application.Contracts.Infrastructure;
 using Template.Application.Features.Account.Command.Authenticate;
+using Template.Application.Features.Account.Command.ConfirmEmail;
 using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
 
@@ -50,23 +51,23 @@ namespace Template.API.Controllers
         }
 
         [HttpPost(Register)]
-        public async Task<IActionResult> RegisterAsync(RegisterUserCommand command)
+        public async Task<IActionResult> RegisterAsync(RegisterUserCommand request)
         {
-            var response = await Mediator.Send(command);
+            var response = await Mediator.Send(request);
             if (response.Succeeded)
             {
                 var code = await _authenticationService.GenerateRegistrationEncodedToken(response.Data.UserId);
-                var callbackLink = Url.ActionLink("ConfirmEmail", "Account", new { Email = command.Email, code = code });
+                var callbackLink = Url.ActionLink("ConfirmEmail", "Account", new { Email = request.Email, code = code });
 
-                await _emailService.SendRegistrationMail(command.Email, callbackLink);
+                await _emailService.SendRegistrationMail(request.Email, callbackLink);
                 response.Data.CallBackUrl = callbackLink;
             }
             return Ok(response);
         }
         [HttpGet(ConfirmEmail)]
-        public async Task<IActionResult> ConfirmEmailAsync(string email, string code)
+        public async Task<IActionResult> ConfirmEmailAsync(ConfirmEmailCommand request)
         {
-            var response = await _authenticationService.ConfirmEmail(email, code);
+            var response = await Mediator.Send(request);
             return Ok(response);
         }
 

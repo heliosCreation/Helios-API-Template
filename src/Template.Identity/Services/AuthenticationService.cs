@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Template.Application.Contracts.Identity;
 using Template.Application.Features.Account;
 using Template.Application.Features.Account.Command.Authenticate;
+using Template.Application.Features.Account.Command.ConfirmEmail;
 using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
 using Template.Application.Model.Account;
@@ -129,19 +130,19 @@ namespace Template.Identity.Services
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
         }
-        public async Task<ApiResponse<object>> ConfirmEmail(string email, string token)
+        public async Task<ApiResponse<object>> ConfirmEmail(ConfirmEmailCommand request)
         {
             var response = new ApiResponse<object>();
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                return response.setNotFoundResponse($"User with email {email} was not found.");
+                return response.setNotFoundResponse($"User with email {request.Email} was not found.");
             }
-            token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var decodedTokenString = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.RegistrationToken));
+            var result = await _userManager.ConfirmEmailAsync(user, decodedTokenString);
             if (!result.Succeeded)
             {
-                return response.SetInternalServerErrorResponse();
+                return response.SetBadRequestResponse(message:"There was an error with the provided registration token.");
             }
             return response;
         }
