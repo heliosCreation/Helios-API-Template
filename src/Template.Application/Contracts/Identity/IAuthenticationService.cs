@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Template.Application.Features.Account;
 using Template.Application.Features.Account.Command.Authenticate;
+using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
 using Template.Application.Model.Account;
-using Template.Application.Models.Account.RefreshToken;
 using Template.Application.Responses;
 
 namespace Template.Application.Contracts.Identity
@@ -11,7 +11,7 @@ namespace Template.Application.Contracts.Identity
     public interface IAuthenticationService
     {
         Task<AuthenticationResponse> AuthenticateAsync(AuthenticateCommand request);
-        Task<ApiResponse<AuthenticationResponse>> RefreshTokenAsync(RefreshTokenRequest request);
+        Task<AuthenticationResponse> RefreshTokenAsync(ResfreshTokenCommand request);
 
         Task<ApiResponse<object>> ConfirmEmail(string email, string token);
         Task<string> GenerateRegistrationEncodedToken(string id);

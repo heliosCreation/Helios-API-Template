@@ -7,6 +7,7 @@ using Template.API.Contract;
 using Template.Application.Contracts.Identity;
 using Template.Application.Contracts.Infrastructure;
 using Template.Application.Features.Account.Command.Authenticate;
+using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
 using Template.Application.Models.Account.RefreshToken;
 
@@ -39,9 +40,9 @@ namespace Template.API.Controllers
 
 
         [HttpPost(Refresh)]
-        public async Task<IActionResult> RefreshTokenAsync(RefreshTokenRequest request)
+        public async Task<IActionResult> RefreshTokenAsync(ResfreshTokenCommand request)
         {
-            var response = await _authenticationService.RefreshTokenAsync(request);
+            var response = await Mediator.Send(request);
             if (response.Succeeded)
             {
                 setTokenCookie(response.Data.RefreshToken);

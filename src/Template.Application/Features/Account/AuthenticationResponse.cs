@@ -10,5 +10,7 @@ namespace Template.Application.Features.Account
 
         [JsonIgnore]
         public bool IsSuccess { get; set; } = true;
+        [JsonIgnore]
+        public string ErrorMessage { get; set; }
     }
 }

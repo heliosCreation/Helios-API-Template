@@ -17,6 +17,6 @@ namespace Template.Application.Contracts.Identity
         ClaimsPrincipal GetPrincipalsFromToken(string token, TokenValidationParameters tokenValidationParameters);
         bool IsJwtWithValidSecurityAlgorithm(SecurityToken validatedToken);
         bool JwtIsExpired(ClaimsPrincipal claimsPrincipal);
-        ApiResponse<AuthenticationResponse> ValidateDbRefreshToken(IRefreshToken storedRefreshToken, string jti);
+        AuthenticationResponse ValidateDbRefreshToken(IRefreshToken storedRefreshToken, string jti);
     }
 }

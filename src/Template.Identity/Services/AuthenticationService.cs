@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 using Template.Application.Contracts.Identity;
 using Template.Application.Features.Account;
 using Template.Application.Features.Account.Command.Authenticate;
+using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
 using Template.Application.Model.Account;
-using Template.Application.Models.Account.RefreshToken;
 using Template.Application.Responses;
 using Template.Identity.Entities;
 
@@ -68,27 +68,32 @@ namespace Template.Identity.Services
 
             return response;
         }
-        public async Task<ApiResponse<AuthenticationResponse>> RefreshTokenAsync(RefreshTokenRequest request)
+        public async Task<AuthenticationResponse> RefreshTokenAsync(ResfreshTokenCommand request)
         {
-            var response = new ApiResponse<AuthenticationResponse>();
+            var response = new AuthenticationResponse();
 
             var claimPrincipals = _tokenUtils.GetPrincipalsFromToken(request.Token, _tokenValidationParameters);
             if (claimPrincipals == null)
             {
-                return response.SetBadRequestResponse(message: "Invalid Token");
+                response.IsSuccess = false;
+                response.ErrorMessage = "Invalid Token";
+                return response;
             }
 
             if (!_tokenUtils.JwtIsExpired(claimPrincipals))
             {
-                return response.SetBadRequestResponse(message: "Token hasn't expired yet.");
+                response.IsSuccess = false;
+                response.ErrorMessage = "Token hasn't expired yet.";
+                return response;
             }
 
             var jti = claimPrincipals.Claims.Single(c => c.Type == JwtRegisteredClaimNames.Jti).Value;
             var storedRefreshToken = await _context.RefreshTokens.SingleOrDefaultAsync(rt => rt.Token == request.RefreshToken);
 
             response = _tokenUtils.ValidateDbRefreshToken(storedRefreshToken, jti);
-            if (!response.Succeeded)
+            if (response.ErrorMessage != null)
             {
+                response.IsSuccess = false;
                 return response;
             }
 
@@ -97,7 +102,7 @@ namespace Template.Identity.Services
             await _context.SaveChangesAsync();
 
             var user = await _userManager.FindByIdAsync(claimPrincipals.Claims.Single(c => c.Type == "uid").Value);
-            response.Data = await _tokenUtils.GenerateAuthenticationResponseForUserAsync(user.Id, _jwtSettings);
+            response = await _tokenUtils.GenerateAuthenticationResponseForUserAsync(user.Id, _jwtSettings);
 
             return response;
         }
