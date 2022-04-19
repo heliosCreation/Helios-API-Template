@@ -5,6 +5,7 @@ using Template.Application.Features.Account.Command.ConfirmEmail;
 using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
 using Template.Application.Features.Account.Command.RegistrationToken;
+using Template.Application.Features.Account.Command.ResetPassword;
 using Template.Application.Responses;
 
 namespace Template.Application.Contracts.Identity
@@ -22,5 +23,6 @@ namespace Template.Application.Contracts.Identity
         Task<bool> UsernameExist(string name);
         Task<string> GetUserIdAsync(string email);
         Task<string> GeneratePasswordForgottenMailToken(string email);
+        Task<ApiResponse<object>> ResetPassword(ResetPasswordCommand request);
     }
 }

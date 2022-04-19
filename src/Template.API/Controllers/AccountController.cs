@@ -88,16 +88,18 @@ namespace Template.API.Controllers
                 return Ok(resetPasswordTokenResponse);
             }
 
-            var callbackLink = Url.ActionLink("ResetPassword", "Account", new { uid = resetPasswordTokenResponse.Data.UserId, token = resetPasswordTokenResponse.Data.ResetPasswordToken });
+            var resetToken = FormatToken(resetPasswordTokenResponse.Data.ResetPasswordToken);
+            var callbackLink = Url.ActionLink("ResetPassword", "Account", new { uid = resetPasswordTokenResponse.Data.UserId, token = resetToken });
             var resetPasswordMailResponse = await Mediator.Send(new SendForgotPasswordMailCommand(request.Email, callbackLink));
 
             return Ok(resetPasswordMailResponse);
         }
 
         [HttpPost(ResetPwd)]
-        public async Task<IActionResult> ResetPassword(ResetPasswordCommand model)
+        public async Task<IActionResult> ResetPassword(ResetPasswordCommand request)
         {
-            return Ok();
+            var resetResponse = await Mediator.Send(request);
+            return Ok(resetResponse);
         }
 
         //Helper methods
@@ -110,6 +112,12 @@ namespace Template.API.Controllers
                 Expires = DateTime.UtcNow.AddDays(7)
             };
             Response.Cookies.Append("refreshToken", token, cookieOptions);
+        }
+
+        private string FormatToken(string token)
+        {
+            token = token.Replace(' ', '+');
+            return token;
         }
 
     }

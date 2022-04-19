@@ -25,6 +25,10 @@ namespace Template.Application.Features.Account.Command.ForgotPassword
             }
 
             var resetToken = await _authenticationService.GeneratePasswordForgottenMailToken(request.Email);
+            if (resetToken == null)
+            {
+                return response.SetUnhautorizedResponse($"User with email address {request.Email} has not confirmed his/her email address.");
+            }
             response.Data = new ForgotPasswordResponse(userId, resetToken);
             return response;
         }

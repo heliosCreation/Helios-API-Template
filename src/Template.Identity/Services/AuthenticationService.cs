@@ -15,6 +15,7 @@ using Template.Application.Features.Account.Command.ConfirmEmail;
 using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
 using Template.Application.Features.Account.Command.RegistrationToken;
+using Template.Application.Features.Account.Command.ResetPassword;
 using Template.Application.Model.Account;
 using Template.Application.Responses;
 using Template.Identity.Entities;
@@ -133,7 +134,7 @@ namespace Template.Identity.Services
                 return new RegistrationTokenResponse(error: $"User with ID {id} was not found");
             }
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            return new RegistrationTokenResponse() {Token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code)) };
+            return new RegistrationTokenResponse() { Token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code)) };
         }
         public async Task<ApiResponse<object>> ConfirmEmail(ConfirmEmailCommand request)
         {
@@ -147,25 +148,35 @@ namespace Template.Identity.Services
             var result = await _userManager.ConfirmEmailAsync(user, decodedTokenString);
             if (!result.Succeeded)
             {
-                return response.SetBadRequestResponse(message:"There was an error with the provided registration token.");
+                return response.SetBadRequestResponse(message: "There was an error with the provided registration token.");
             }
             return response;
         }
         public async Task<string> GeneratePasswordForgottenMailToken(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+            if (!user.EmailConfirmed)
+            {
+                return null;
+            }
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             return token;
         }
-        //public async Task<IdentityResult> ResetPassword(ResetPasswordCommand request)
-        //{
-        //    var user = await _userManager.FindByIdAsync(request.Uid);
-        //    return await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
-        //}
+        public async Task<ApiResponse<object>> ResetPassword(ResetPasswordCommand request)
+        {
+            var response = new ApiResponse<object>();
+            var user = await _userManager.FindByIdAsync(request.Uid);
+            var result =  await _userManager.ResetPasswordAsync(user, request.ResetToken, request.NewPassword);
+            if (!result.Succeeded)
+            {
+                return response.SetBadRequestResponse("The combination UID/TOKEN was wrong");
+            }
+            return response; 
+        }
 
         public async Task<string> GetUserIdAsync(string email)
         {
-            var user =  await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
             return user != null ? user.Id : null;
         }
         public async Task<bool> UserEmailExist(string email)
