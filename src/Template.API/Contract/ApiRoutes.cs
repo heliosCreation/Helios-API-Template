@@ -47,13 +47,18 @@
             public const string Controller = nameof(Account);
             public const string EndpointBase = Base + Controller + "/";
 
-            public const string Authenticate = EndpointBase + "authenticate";
-            
-            public const string Refresh = EndpointBase + "refresh";
 
             public const string Register = EndpointBase + "register";
 
             public const string ConfirmEmail = EndpointBase + "confirmEmail";
+            
+            public const string Authenticate = EndpointBase + "authenticate";
+            
+            public const string Refresh = EndpointBase + "refresh";
+
+            public const string ForgotPwd = EndpointBase + "forgotPassword";
+            
+            public const string ResetPwd = EndpointBase + "resetPassword";
         }
     }
 }

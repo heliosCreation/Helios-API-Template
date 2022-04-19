@@ -4,17 +4,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Application.Contracts.Identity;
-using Template.Application.Features.Account.Command;
+using Template.Application.Features.Account;
+using Template.Application.Features.Account.Command.Authenticate;
+using Template.Application.Features.Account.Command.ConfirmEmail;
+using Template.Application.Features.Account.Command.RefreshToken;
+using Template.Application.Features.Account.Command.Register;
+using Template.Application.Features.Account.Command.RegistrationToken;
+using Template.Application.Features.Account.Command.ResetPassword;
 using Template.Application.Model.Account;
-using Template.Application.Model.Account.Authentification;
-using Template.Application.Models.Account.RefreshToken;
 using Template.Application.Responses;
 using Template.Identity.Entities;
 
@@ -47,47 +49,54 @@ namespace Template.Identity.Services
         }
 
 
-        public async Task<ApiResponse<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request)
+        public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticateCommand request)
         {
-            var response = new ApiResponse<AuthenticationResponse>();
+            var response = new AuthenticationResponse();
             var user = await _context.Users.Where(u => u.Email == request.Email).FirstOrDefaultAsync();
             if (user == null)
             {
-                return response.SetUnhautorizedResponse();
+                response.IsSuccess = false;
+                return response;
             }
 
             var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
             {
-                return response.SetUnhautorizedResponse();
+                response.IsSuccess = false;
+                return response;
             }
 
-            response.Data = await _tokenUtils.GenerateAuthenticationResponseForUserAsync(user.Id, _jwtSettings);
+            response = await _tokenUtils.GenerateAuthenticationResponseForUserAsync(user.Id, _jwtSettings);
 
             return response;
         }
-        public async Task<ApiResponse<AuthenticationResponse>> RefreshTokenAsync(RefreshTokenRequest request)
+        public async Task<AuthenticationResponse> RefreshTokenAsync(ResfreshTokenCommand request)
         {
-            var response = new ApiResponse<AuthenticationResponse>();
+            var response = new AuthenticationResponse();
 
             var claimPrincipals = _tokenUtils.GetPrincipalsFromToken(request.Token, _tokenValidationParameters);
             if (claimPrincipals == null)
             {
-                return response.SetBadRequestResponse(message: "Invalid Token");
+                response.IsSuccess = false;
+                response.ErrorMessage = "Invalid Token";
+                return response;
             }
 
             if (!_tokenUtils.JwtIsExpired(claimPrincipals))
             {
-                return response.SetBadRequestResponse(message: "Token hasn't expired yet.");
+                response.IsSuccess = false;
+                response.ErrorMessage = "Token hasn't expired yet.";
+                return response;
             }
 
             var jti = claimPrincipals.Claims.Single(c => c.Type == JwtRegisteredClaimNames.Jti).Value;
             var storedRefreshToken = await _context.RefreshTokens.SingleOrDefaultAsync(rt => rt.Token == request.RefreshToken);
 
             response = _tokenUtils.ValidateDbRefreshToken(storedRefreshToken, jti);
-            if (!response.Succeeded)
+            if (response.ErrorMessage != null)
             {
+                response.IsSuccess = false;
                 return response;
             }
 
@@ -96,11 +105,11 @@ namespace Template.Identity.Services
             await _context.SaveChangesAsync();
 
             var user = await _userManager.FindByIdAsync(claimPrincipals.Claims.Single(c => c.Type == "uid").Value);
-            response.Data =  await _tokenUtils.GenerateAuthenticationResponseForUserAsync(user.Id, _jwtSettings);
+            response = await _tokenUtils.GenerateAuthenticationResponseForUserAsync(user.Id, _jwtSettings);
 
             return response;
         }
-        public async Task<CustomIdentityResult> RegisterAsync(RegisterUserCommand command)
+        public async Task<RegistrationResponse> RegisterAsync(RegisterUserCommand command)
         {
             var user = new ApplicationUser
             {
@@ -113,31 +122,62 @@ namespace Template.Identity.Services
             var result = await _userManager.CreateAsync(user, command.Password);
             if (!result.Succeeded)
             {
-                return new CustomIdentityResult(result.Errors.Select(e => e.Description).ToList());
+                return new RegistrationResponse(result.Errors.Select(e => e.Description).ToList());
             }
-            return new CustomIdentityResult(user.Id);
+            return new RegistrationResponse(user.Id);
         }
-        public async Task<string> GenerateRegistrationEncodedToken(string id)
+        public async Task<RegistrationTokenResponse> GenerateRegistrationEncodedToken(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        }
-        public async Task<ApiResponse<object>> ConfirmEmail(string email, string token)
-        {
-            var response = new ApiResponse<object>();
-            var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                return response.setNotFoundResponse($"User with email {email} was not found.");
+                return new RegistrationTokenResponse(error: $"User with ID {id} was not found");
             }
-            token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            return new RegistrationTokenResponse() { Token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code)) };
+        }
+        public async Task<ApiResponse<object>> ConfirmEmail(ConfirmEmailCommand request)
+        {
+            var response = new ApiResponse<object>();
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return response.setNotFoundResponse($"User with email {request.Email} was not found.");
+            }
+            var decodedTokenString = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.RegistrationToken));
+            var result = await _userManager.ConfirmEmailAsync(user, decodedTokenString);
             if (!result.Succeeded)
             {
-                return response.SetInternalServerErrorResponse();
+                return response.SetBadRequestResponse(message: "There was an error with the provided registration token.");
             }
             return response;
+        }
+        public async Task<string> GeneratePasswordForgottenMailToken(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (!user.EmailConfirmed)
+            {
+                return null;
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return token;
+        }
+        public async Task<ApiResponse<object>> ResetPassword(ResetPasswordCommand request)
+        {
+            var response = new ApiResponse<object>();
+            var user = await _userManager.FindByIdAsync(request.Uid);
+            var result =  await _userManager.ResetPasswordAsync(user, request.ResetToken, request.NewPassword);
+            if (!result.Succeeded)
+            {
+                return response.SetBadRequestResponse("The combination UID/TOKEN was wrong");
+            }
+            return response; 
+        }
+
+        public async Task<string> GetUserIdAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user != null ? user.Id : null;
         }
         public async Task<bool> UserEmailExist(string email)
         {

@@ -33,18 +33,21 @@ namespace Template.Application.Responses
             }
             return this;
         }
-        public ApiResponse<T> SetUnhautorizedResponse()
+        public ApiResponse<T> SetUnhautorizedResponse(string message = null)
         {
             Succeeded = false;
             StatusCode = (int)HttpStatusCode.Unauthorized;
-            ErrorMessages.Add("You're not allowed to access this resource.");
+            ErrorMessages.Add( message == null? "You're not allowed to access this resource." : message);
             return this;
         }
-        public ApiResponse<T> SetInternalServerErrorResponse()
+        public ApiResponse<T> SetInternalServerErrorResponse(string message = null)
         {
             Succeeded = false;
             StatusCode = (int)HttpStatusCode.InternalServerError;
-            ErrorMessages.Add("An error occured while processing your request. If the problem persist, try to contact your administrator.");
+            ErrorMessages.Add(message == null ? 
+                            "An error occured while processing your request. If the problem persist, try to contact your administrator."
+                            :message);
+
             return this;
         }
     }

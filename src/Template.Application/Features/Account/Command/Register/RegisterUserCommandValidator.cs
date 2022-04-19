@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Template.Application.Contracts.Identity;
 
-namespace Template.Application.Features.Account.Command
+namespace Template.Application.Features.Account.Command.Register
 {
 
     public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
@@ -41,6 +41,9 @@ namespace Template.Application.Features.Account.Command
                 .NotEmpty()
                 .NotNull()
                 .MaximumLength(120);
+
+            RuleFor(c => c.ConfirmationPassword)
+                .Equal(c => c.Password);
 
             RuleFor(e => e)
             .MustAsync(IsNameUnique).WithMessage("Username already taken.")

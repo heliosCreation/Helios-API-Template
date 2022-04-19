@@ -36,7 +36,7 @@ namespace Template.Infrastructure.Mail
             return response.StatusCode == System.Net.HttpStatusCode.Accepted || response.StatusCode == System.Net.HttpStatusCode.OK;
         }
 
-        public async Task SendRegistrationMail(string address, string url)
+        public async Task<bool> SendRegistrationMail(string address, string url)
         {
             var email = new Email
             {
@@ -44,9 +44,18 @@ namespace Template.Infrastructure.Mail
                 Subject = "Email confirmation",
                 Body = $"<p> To finalize your registration click <a href=\"{url}\">here</a>. :) </p>"
             };
-            await SendMail(email);
+            return await SendMail(email);
         }
-
+        public async Task<bool> SendForgotPasswordMail(string address, string url)
+        {
+            var email = new Email
+            {
+                To = address,
+                Subject = "Password Reset",
+                Body = $"<p> To reset your password click <a href=\"{url}\">here</a>.</p>"
+            };
+            return await SendMail(email);
+        }
 
     }
 }

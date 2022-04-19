@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Template.Application.Features.Account;
 using Template.Application.Model.Account;
-using Template.Application.Model.Account.Authentification;
 using Template.Application.Responses;
 
 namespace Template.Application.Contracts.Identity
@@ -17,6 +17,6 @@ namespace Template.Application.Contracts.Identity
         ClaimsPrincipal GetPrincipalsFromToken(string token, TokenValidationParameters tokenValidationParameters);
         bool IsJwtWithValidSecurityAlgorithm(SecurityToken validatedToken);
         bool JwtIsExpired(ClaimsPrincipal claimsPrincipal);
-        ApiResponse<AuthenticationResponse> ValidateDbRefreshToken(IRefreshToken storedRefreshToken, string jti);
+        AuthenticationResponse ValidateDbRefreshToken(IRefreshToken storedRefreshToken, string jti);
     }
 }

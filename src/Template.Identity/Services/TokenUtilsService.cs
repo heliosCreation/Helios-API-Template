@@ -9,9 +9,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Template.Application.Contracts.Identity;
+using Template.Application.Features.Account;
 using Template.Application.Model.Account;
-using Template.Application.Model.Account.Authentification;
-using Template.Application.Responses;
 using Template.Identity.Entities;
 
 namespace Template.Identity.Services
@@ -119,30 +118,33 @@ namespace Template.Identity.Services
 
             return expiryDateTimeUtc < DateTime.UtcNow;
         }
-        public ApiResponse<AuthenticationResponse> ValidateDbRefreshToken(IRefreshToken storedRefreshToken, string jti)
+        public AuthenticationResponse ValidateDbRefreshToken(IRefreshToken storedRefreshToken, string jti)
         {
-            var response = new ApiResponse<AuthenticationResponse>();
+            var response = new AuthenticationResponse();
             if (storedRefreshToken == null)
             {
-                return response.setNotFoundResponse(message: "This refresh token does not exists.");
+                response.ErrorMessage = "This refresh token does not exists.";
             }
 
             if (DateTime.UtcNow > storedRefreshToken.ExpiryDate)
             {
-                return response.SetBadRequestResponse(message: "This refresh token has expired.");
+                response.ErrorMessage = "This refresh token has expired.";
+
             }
 
             if (storedRefreshToken.Invalidated)
             {
-                return response.SetBadRequestResponse(message: "This refresh token has been invalidated.");
+                response.ErrorMessage = "This refresh token has been invalidated.";
+
             }
             if (storedRefreshToken.IsUsed)
             {
-                return response.SetBadRequestResponse(message: "This refresh token has been used.");
+                response.ErrorMessage = "This refresh token has been used.";
+
             }
             if (storedRefreshToken.JwtId != jti)
             {
-                return response.SetBadRequestResponse(message: "This  refresh token does not match this JWT.");
+                response.ErrorMessage = "This  refresh token does not match this JWT.";
             }
 
             return response;
