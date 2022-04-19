@@ -20,5 +20,7 @@ namespace Template.Application.Contracts.Identity
 
         Task<bool> UserEmailExist(string email);
         Task<bool> UsernameExist(string name);
+        Task<string> GetUserIdAsync(string email);
+        Task<string> GeneratePasswordForgottenMailToken(string email);
     }
 }

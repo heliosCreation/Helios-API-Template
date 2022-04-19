@@ -46,7 +46,16 @@ namespace Template.Infrastructure.Mail
             };
             return await SendMail(email);
         }
-
+        public async Task<bool> SendForgotPasswordMail(string address, string url)
+        {
+            var email = new Email
+            {
+                To = address,
+                Subject = "Password Reset",
+                Body = $"<p> To reset your password click <a href=\"{url}\">here</a>.</p>"
+            };
+            return await SendMail(email);
+        }
 
     }
 }

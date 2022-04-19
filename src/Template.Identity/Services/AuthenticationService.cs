@@ -151,6 +151,23 @@ namespace Template.Identity.Services
             }
             return response;
         }
+        public async Task<string> GeneratePasswordForgottenMailToken(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return token;
+        }
+        //public async Task<IdentityResult> ResetPassword(ResetPasswordCommand request)
+        //{
+        //    var user = await _userManager.FindByIdAsync(request.Uid);
+        //    return await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+        //}
+
+        public async Task<string> GetUserIdAsync(string email)
+        {
+            var user =  await _userManager.FindByEmailAsync(email);
+            return user != null ? user.Id : null;
+        }
         public async Task<bool> UserEmailExist(string email)
         {
             return await _userManager.FindByEmailAsync(email) != null;
