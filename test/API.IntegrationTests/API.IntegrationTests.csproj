@@ -36,8 +36,4 @@
     <ProjectReference Include="..\..\src\Template.API\Template.API.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\Account\Command\RefreshToken\" />
-  </ItemGroup>
-
 </Project>
