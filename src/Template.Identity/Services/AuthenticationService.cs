@@ -56,6 +56,7 @@ namespace Template.Identity.Services
             if (user == null)
             {
                 response.IsSuccess = false;
+                response.ErrorMessage = "No user found that was associated to this email.";
                 return response;
             }
 

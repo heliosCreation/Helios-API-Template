@@ -1,9 +1,15 @@
 ﻿using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Template.Application.Contracts.Infrastructure;
 using Template.Application.Model.Mail;
+using MimeKit;
+using MimeKit.Text;
+using MailKit.Security;
+using MailKit.Net.Smtp;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace Template.Infrastructure.Mail
 {
@@ -16,8 +22,29 @@ namespace Template.Infrastructure.Mail
             _emailSettings = emailSettings.Value;
         }
 
+
+
+
         public async Task<bool> SendMail(Email email)
         {
+            if (_emailSettings.UseDevServer)
+            {
+                var emailMessage = new MimeMessage();
+                emailMessage.From.Add(new MailboxAddress("template","from_address@example.com"));
+                emailMessage.To.Add(MailboxAddress.Parse(email.To));
+                emailMessage.Subject =email.Subject;
+                emailMessage.Body = new TextPart(TextFormat.Plain) { Text = email.Body };
+
+                // send email
+                using var devClient = new SmtpClient();
+                var secureSocketOption = SecureSocketOptions.None;
+                devClient.Connect("localhost", 25, secureSocketOption);
+                await devClient.SendAsync(emailMessage);
+                await devClient.DisconnectAsync(true);
+                
+                return true;
+
+            }
             var client = new SendGridClient(_emailSettings.ApiKey);
 
             var subject = email.Subject;
@@ -44,7 +71,8 @@ namespace Template.Infrastructure.Mail
                 Subject = "Email confirmation",
                 Body = $"<p> To finalize your registration click <a href=\"{url}\">here</a>. :) </p>"
             };
-            return await SendMail(email);
+            var succeeded =  await SendMail(email);
+            return succeeded;
         }
         public async Task<bool> SendForgotPasswordMail(string address, string url)
         {

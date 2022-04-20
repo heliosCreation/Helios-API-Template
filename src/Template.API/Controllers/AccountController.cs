@@ -36,7 +36,7 @@ namespace Template.API.Controllers
                 {
                     return Ok(registrationResponse.setNotFoundResponse(message: tokenResponse.ErrorMessages[0]));
                 }
-                var callbackLink = Url.ActionLink("ConfirmEmail", "Account", new { Email = request.Email, code = tokenResponse.Data.Token });
+                var callbackLink = Url.ActionLink("ConfirmEmail", "Account", new { Email = request.Email, token = tokenResponse.Data.Token });
 
                 var mailResponse = await Mediator.Send(new SendRegistrationMailCommand(request.Email, callbackLink));
                 if (!mailResponse.Succeeded)

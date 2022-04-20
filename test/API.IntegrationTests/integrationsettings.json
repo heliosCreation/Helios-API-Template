@@ -1,0 +1,30 @@
+{
+  "EmailSettings": {
+    "FromAddress": "template@hotmail.com",
+    "ApiKey": "MyFakeSuperSecretPassword_:)",
+    "FromName": "Helios",
+    "UseDevServer": true
+  },
+
+  "ConnectionStrings": {
+    "IntegrationData": "Server=.;Database={name};Trusted_Connection=true;",
+    "IntegrationIdentity": "Server=.;Database={name};Trusted_Connection=true;"
+  },
+
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+
+  "JwtSettings": {
+    "Key": "FakeSecretkeyThatisNotSoSecured:)",
+    "Issuer": "TemplateIdentity",
+    "Audience": "TemplateIdentityUser",
+    "TokenLifetime": "00:00:45"
+  },
+
+  "AllowedHosts": "*"
+}
