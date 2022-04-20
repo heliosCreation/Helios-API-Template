@@ -3,7 +3,7 @@ using Template.Application.Responses;
 
 namespace Template.Application.Features.Account.Command.SendForgotPasswordMail
 {
-    public class SendForgotPasswordMailCommand : IRequest<ApiResponse<object>>
+    public class SendForgotPasswordMailCommand : IRequest<ApiResponse<string>>
     {
         public SendForgotPasswordMailCommand(string email, string callbackLink)
         {

@@ -10,7 +10,7 @@ using Template.Application.Responses;
 
 namespace Template.Application.Features.Account.Command.SendForgotPasswordMail
 {
-    public class SendForgotPasswordMailCommandHandler : IRequestHandler<SendForgotPasswordMailCommand, ApiResponse<object>>
+    public class SendForgotPasswordMailCommandHandler : IRequestHandler<SendForgotPasswordMailCommand, ApiResponse<string>>
     {
         private readonly IEmailService _emailService;
 
@@ -18,9 +18,9 @@ namespace Template.Application.Features.Account.Command.SendForgotPasswordMail
         {
             _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         }
-        public async Task<ApiResponse<object>> Handle(SendForgotPasswordMailCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<string>> Handle(SendForgotPasswordMailCommand request, CancellationToken cancellationToken)
         {
-            var response = new ApiResponse<object>();
+            var response = new ApiResponse<string>();
             var emailSent = await _emailService.SendForgotPasswordMail(request.Email, request.CallbackLink);
 
             if (!emailSent)
@@ -28,6 +28,7 @@ namespace Template.Application.Features.Account.Command.SendForgotPasswordMail
                 return response.SetInternalServerErrorResponse($"There was a problem trying to send the password reset mail for email {request.Email}.");
             }
 
+            response.Data = request.CallbackLink;
             return response;
         }
     }

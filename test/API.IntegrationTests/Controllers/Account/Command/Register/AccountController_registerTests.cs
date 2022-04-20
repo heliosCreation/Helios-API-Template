@@ -13,7 +13,7 @@ namespace API.IntegrationTests.Controllers.Account.Command.Register
     using static Api.IntegrationTests.Utils.AccountTools;
     using static ApiRoutes.Account;
 
-    public class AccountController_emailConfirmationTests : IntegrationTestBase
+    public class AccountController_registerTests : IntegrationTestBase
     {
         #region Register
         [Fact]

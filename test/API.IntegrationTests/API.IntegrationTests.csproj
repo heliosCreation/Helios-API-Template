@@ -37,9 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Account\Command\ResetPassword\" />
     <Folder Include="Controllers\Account\Command\RefreshToken\" />
-    <Folder Include="Controllers\Account\Command\ForgotPassword\" />
   </ItemGroup>
 
 </Project>
