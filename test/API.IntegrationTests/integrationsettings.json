@@ -23,7 +23,7 @@
     "Key": "FakeSecretkeyThatisNotSoSecured:)",
     "Issuer": "TemplateIdentity",
     "Audience": "TemplateIdentityUser",
-    "TokenLifetime": "00:00:45"
+    "TokenLifetime": "00:00:00"
   },
 
   "AllowedHosts": "*"

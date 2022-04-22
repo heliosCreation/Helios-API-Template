@@ -23,6 +23,8 @@ namespace Api.IntegrationTest.Base
     public class IntegrationTestBase : IDisposable
     {
         protected readonly HttpClient TestClient;
+        protected readonly HttpClient TestAdminClient;
+
         private IConfiguration _configuration;
         private readonly IServiceProvider _serviceProvider;
 
@@ -57,14 +59,19 @@ namespace Api.IntegrationTest.Base
                         services.AddDbContext<AppIdentityDbContext>(
                            opt => opt.UseSqlServer(identityConnectionString,
                            b => b.MigrationsAssembly(typeof(AppIdentityDbContext).Assembly.FullName)));
+
+
                     });
                 });
 
 
 
             _serviceProvider = appFactory.Services;
+
             TestClient = appFactory.CreateClient();
+            TestAdminClient = appFactory.CreateClient();
             TestClient.BaseAddress = new Uri("https://localhost:5001");
+            TestAdminClient.BaseAddress = new Uri("https://localhost:5001");
 
             using var serviceScope = _serviceProvider.CreateScope();
 
@@ -76,12 +83,15 @@ namespace Api.IntegrationTest.Base
 
             dataContext.Database.EnsureCreated();
             identityContext.Database.EnsureCreated();
+
+
         }
 
 
-        protected async Task AuthenticateAsync()
+        protected async Task AuthenticateAsync(bool isAdmin = false)
         {
-            TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJwtAsync());
+            var target = isAdmin ? TestAdminClient : TestClient;
+            target.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJwtAsync(isAdmin));
         }
 
         protected async Task<ApiResponse<CategoryVm>> CreateCategoryAsync(CreateCategoryCommand command)
@@ -90,17 +100,19 @@ namespace Api.IntegrationTest.Base
             return await response.Content.ReadAsAsync<ApiResponse<CategoryVm>>();
         }
 
-        private async Task<string> GetJwtAsync()
+        private async Task<string> GetJwtAsync(bool isAdmin)
         {
+
             var response = await TestClient.PostAsJsonAsync(Account.Authenticate, new AuthenticateCommand
             {
-                Email = "john@gmail.com",
+                Email = isAdmin ? "SuperAdmin@Admin.com" : "john@gmail.com",
                 Password = "Pwd12345!"
             });
 
             var content = await response.Content.ReadAsAsync<ApiResponse<AuthenticationResponse>>();
             return content.Data.Token;
         }
+
 
         public void Dispose()
         {

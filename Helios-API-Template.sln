@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.IntegrationTests", "test\Persistence.IntegrationTests\Persistence.IntegrationTests.csproj", "{DD9EDD47-A4CD-4898-B9FB-81D614FC7A9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.Utils", "test\UnitTests.Utils\UnitTests.Utils.csproj", "{F3F45A04-B9B8-4334-BF3C-7FC35EEEEE7F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Utils", "test\UnitTests.Utils\Tests.Utils.csproj", "{F3F45A04-B9B8-4334-BF3C-7FC35EEEEE7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
