@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace UnitTests.Utils.IdentitySet
@@ -42,6 +41,24 @@ namespace UnitTests.Utils.IdentitySet
 
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
+        #endregion
+
+        #region confirmEmail
+        public class ConfirmEmail_BadRequest_Command : IEnumerable<object[]>
+        {
+            private readonly List<object[]> _data = new List<object[]>
+            {
+                new object[] {"", "token"},
+                new object[] {"test", "token"},
+                new object[] {"test@test.com", ""},
+
+            };
+
+            public IEnumerator<object[]> GetEnumerator() => _data.GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+
         #endregion
     }
 }

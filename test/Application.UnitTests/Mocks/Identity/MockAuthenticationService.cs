@@ -8,7 +8,9 @@ using System.Text;
 using Template.Application.Contracts.Identity;
 using Template.Application.Features.Account;
 using Template.Application.Features.Account.Command.Authenticate;
+using Template.Application.Features.Account.Command.ConfirmEmail;
 using Template.Application.Features.Account.Command.Register;
+using Template.Application.Responses;
 using Template.Identity.Entities;
 
 namespace Application.UnitTests.Mocks.Identity
@@ -46,6 +48,9 @@ namespace Application.UnitTests.Mocks.Identity
             MockService.Setup(s => s.RegisterAsync(It.Is<RegisterCommand>(c => c.FirstName == "Error"))).ReturnsAsync(new RegistrationResponse(new List<string> { "errors were made." }));
             #endregion
 
+            #region confirm email
+            MockService.Setup(s => s.ConfirmEmail(It.IsAny<ConfirmEmailCommand>())).ReturnsAsync(new ApiResponse<object>());
+            #endregion
 
             #region private methods
             MockService.Setup(s => s.UsernameExist(It.IsAny<string>())).ReturnsAsync(true);
@@ -54,6 +59,7 @@ namespace Application.UnitTests.Mocks.Identity
             MockService.Setup(s => s.UserEmailExist(It.IsAny<string>())).ReturnsAsync(true);
             MockService.Setup(s => s.UserEmailExist(It.Is<string>(e => e == "Exist@test.com"))).ReturnsAsync(false);
             #endregion
+
             return MockService;
         }
 
