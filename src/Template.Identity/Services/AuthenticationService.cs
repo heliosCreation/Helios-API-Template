@@ -110,7 +110,7 @@ namespace Template.Identity.Services
 
             return response;
         }
-        public async Task<RegistrationResponse> RegisterAsync(RegisterUserCommand command)
+        public async Task<RegistrationResponse> RegisterAsync(RegisterCommand command)
         {
             var user = new ApplicationUser
             {

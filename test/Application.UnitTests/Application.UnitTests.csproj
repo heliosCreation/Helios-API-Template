@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Template.Identity\Template.Identity.csproj" />
     <ProjectReference Include="..\UnitTests.Utils\UnitTests.Utils.csproj" />
   </ItemGroup>
 

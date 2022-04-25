@@ -54,7 +54,7 @@ namespace API.IntegrationTests.Controllers.Account.Command.Authenticate
         public async Task Login_willFail_ifEmailIsNotConfirmed()
         {
             await TestClient.PostAsJsonAsync(Register,
-                new RegisterUserCommand
+                new RegisterCommand
                 {
                     Email = "test@gmail.com",
                     Password = "Pwd12345!",

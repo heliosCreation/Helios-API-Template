@@ -26,7 +26,7 @@ namespace Template.API.Controllers
         }
 
         [HttpPost(Register)]
-        public async Task<IActionResult> RegisterAsync(RegisterUserCommand request)
+        public async Task<IActionResult> RegisterAsync(RegisterCommand request)
         {
             var registrationResponse = await Mediator.Send(request);
             if (registrationResponse.Succeeded)

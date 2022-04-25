@@ -23,7 +23,7 @@ namespace API.IntegrationTests.Controllers.Account.Command.ConfirmationEmail
         public async Task EmailConfirmation_returnsOKStatusCode()
         {
             var registrationResponse = await TestClient.PostAsJsonAsync(Register,
-                new RegisterUserCommand
+                new RegisterCommand
                 {
                     Email = "test@gmail.com",
                     Password = "Pwd12345!",
@@ -50,7 +50,7 @@ namespace API.IntegrationTests.Controllers.Account.Command.ConfirmationEmail
         public async Task EmailConfirmation_enableUserLogin()
         {
             var registrationResponse = await TestClient.PostAsJsonAsync(Register,
-                new RegisterUserCommand
+                new RegisterCommand
                 {
                     Email = "test@gmail.com",
                     Password = "Pwd12345!",

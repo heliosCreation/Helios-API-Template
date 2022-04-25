@@ -20,7 +20,7 @@ namespace API.IntegrationTests.Controllers.Account.Command.Register
         public async Task Register_willReturns_CorrectStatusCodeAndData_WhenValidCredentialsArePassed()
         {
             var registrationResponse = await TestClient.PostAsJsonAsync(Register,
-                new RegisterUserCommand
+                new RegisterCommand
                 {
                     Email = "test@gmail.com",
                     Password = "Pwd12345!",
@@ -43,7 +43,7 @@ namespace API.IntegrationTests.Controllers.Account.Command.Register
         {
 
             var response = await TestClient.PostAsJsonAsync(Register,
-                new RegisterUserCommand
+                new RegisterCommand
                 {
                     Email = email,
                     Password = password,

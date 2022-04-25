@@ -12,7 +12,7 @@ namespace Template.Application.Contracts.Identity
 {
     public interface IAuthenticationService
     {
-        Task<RegistrationResponse> RegisterAsync(RegisterUserCommand command);
+        Task<RegistrationResponse> RegisterAsync(RegisterCommand command);
         Task<RegistrationTokenResponse> GenerateRegistrationEncodedToken(string id);
         Task<ApiResponse<object>> ConfirmEmail(ConfirmEmailCommand request);
         Task<AuthenticationResponse> AuthenticateAsync(AuthenticateCommand request);
