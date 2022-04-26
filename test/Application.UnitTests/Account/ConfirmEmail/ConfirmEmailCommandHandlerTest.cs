@@ -18,26 +18,21 @@ namespace Application.UnitTests.Account.ConfirmEmail
     {
         private readonly ConfirmEmailCommandHandler _handler;
         private readonly ConfirmEmailCommandValidator _validator;
+        private readonly RequestHandlerHelper<ConfirmEmailCommand, ConfirmEmailCommandHandler, ConfirmEmailCommandValidator, ApiResponse<object>> _helper;
+
 
         public ConfirmEmailCommandHandlerTest()
         {
             _handler = new ConfirmEmailCommandHandler(_mockAuthenticationService.Object);
             _validator = new ConfirmEmailCommandValidator();
+            _helper = new RequestHandlerHelper<ConfirmEmailCommand, ConfirmEmailCommandHandler, ConfirmEmailCommandValidator, ApiResponse<object>>();
         }
 
         [Fact]
         public async Task Handle_WhenInputIsValid_ReturnsSuccess_AndData()
         {
             var command = new ConfirmEmailCommand { Email = "test@test.com", RegistrationToken = "token" };
-            var validationBehavior = new ValidationBehaviour<ConfirmEmailCommand, ApiResponse<object>>(new List<ConfirmEmailCommandValidator>()
-            {
-                _validator
-            });
-            var result = await validationBehavior.Handle(command, CancellationToken.None, () =>
-            {
-                return _handler.Handle(command, cancellationToken: CancellationToken.None);
-            });
-
+            var result = await _helper.HandleRequest(command, _handler, _validator);
 
             result.Succeeded.ShouldBe(true);
             result.StatusCode.ShouldBe((int)HttpStatusCode.OK);
@@ -48,15 +43,7 @@ namespace Application.UnitTests.Account.ConfirmEmail
         public async Task Handle_WhenInputAreInValid_ReturnsBadRequest_AndErrorMsg(string email, string token)
         {
             var command = new ConfirmEmailCommand { Email = email, RegistrationToken = token };
-            var validationBehavior = new ValidationBehaviour<ConfirmEmailCommand, ApiResponse<object>>(new List<ConfirmEmailCommandValidator>()
-            {
-                _validator
-            });
-            var result = await validationBehavior.Handle(command, CancellationToken.None, () =>
-            {
-                return _handler.Handle(command, cancellationToken: CancellationToken.None);
-            });
-
+            var result = await _helper.HandleRequest(command, _handler, _validator);
 
             result.Succeeded.ShouldBe(false);
             result.StatusCode.ShouldBe((int)HttpStatusCode.BadRequest);
