@@ -30,7 +30,8 @@ namespace Application.UnitTests
             });
             return await validationBehavior.Handle(command, CancellationToken.None, () =>
             {
-                return handler.Handle(command, cancellationToken: CancellationToken.None);
+                var handled = handler.Handle(command, cancellationToken: CancellationToken.None);
+                return handled;
             });
         }
 

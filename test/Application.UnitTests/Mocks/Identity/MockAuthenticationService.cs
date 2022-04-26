@@ -3,15 +3,15 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Text;
 using Template.Application.Contracts.Identity;
 using Template.Application.Features.Account;
 using Template.Application.Features.Account.Command.Authenticate;
 using Template.Application.Features.Account.Command.ConfirmEmail;
+using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
+using Template.Application.Features.Account.Command.RegistrationToken;
 using Template.Application.Responses;
-using Template.Identity.Entities;
 
 namespace Application.UnitTests.Mocks.Identity
 {
@@ -22,6 +22,22 @@ namespace Application.UnitTests.Mocks.Identity
 
         public Mock<IAuthenticationService> GetEntityRepository()
         {
+
+            #region register
+            //Registration
+            MockService.Setup(s => s.RegisterAsync(It.IsAny<RegisterCommand>())).ReturnsAsync(new RegistrationResponse { CallBackUrl = "callbackTest", UserId = Guid.NewGuid().ToString() });
+            MockService.Setup(s => s.RegisterAsync(It.Is<RegisterCommand>(c => c.FirstName == "Error"))).ReturnsAsync(new RegistrationResponse(new List<string> { "errors were made." }));
+
+            //Token creation
+            MockService.Setup(s => s.GenerateRegistrationEncodedToken(It.IsAny<string>())).ReturnsAsync(new RegistrationTokenResponse { IsSuccess = true, Token = "test" });
+            MockService.Setup(s => s.GenerateRegistrationEncodedToken(It.Is<string>(s => s == "testError"))).ReturnsAsync(new RegistrationTokenResponse { IsSuccess = false, Error = "test error" });
+
+            #endregion
+
+            #region confirm email
+            MockService.Setup(s => s.ConfirmEmail(It.IsAny<ConfirmEmailCommand>())).ReturnsAsync(new ApiResponse<object>());
+            #endregion
+
             #region authenticate
             MockService.Setup(s => s.AuthenticateAsync(It.IsAny<AuthenticateCommand>())).ReturnsAsync((AuthenticateCommand request) =>
             {
@@ -43,13 +59,9 @@ namespace Application.UnitTests.Mocks.Identity
             });
             #endregion
 
-            #region register
-            MockService.Setup(s => s.RegisterAsync(It.IsAny<RegisterCommand>())).ReturnsAsync(new RegistrationResponse { CallBackUrl = "callbackTest", UserId = Guid.NewGuid().ToString() });
-            MockService.Setup(s => s.RegisterAsync(It.Is<RegisterCommand>(c => c.FirstName == "Error"))).ReturnsAsync(new RegistrationResponse(new List<string> { "errors were made." }));
-            #endregion
-
-            #region confirm email
-            MockService.Setup(s => s.ConfirmEmail(It.IsAny<ConfirmEmailCommand>())).ReturnsAsync(new ApiResponse<object>());
+            #region refreshToken
+            MockService.Setup(s => s.RefreshTokenAsync(It.IsAny<ResfreshTokenCommand>())).ReturnsAsync(new AuthenticationResponse { Token = "test", RefreshToken = "test" });
+            MockService.Setup(s => s.RefreshTokenAsync(It.Is<ResfreshTokenCommand>(c => c.Token == "testError"))).ReturnsAsync(new AuthenticationResponse { IsSuccess = false, ErrorMessage = "This is an error." });
             #endregion
 
             #region forgotPassword
