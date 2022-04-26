@@ -17,16 +17,13 @@ using static UnitTests.Utils.IdentitySet.AccountSet;
 
 namespace Application.UnitTests.Account.Register
 {
-    public class RegisterCommandHandlerTest
+    public class RegisterCommandHandlerTest : AccountBaseTest
     {
         private readonly RegisterCommandHandler _handler;
         private readonly RegisterCommandValidator _validator;
-        private readonly Mock<IAuthenticationService> _mockAuthenticationService;
 
         public RegisterCommandHandlerTest()
         {
-            _mockAuthenticationService = new MockAuthenticationService().GetEntityRepository();
-
             _handler = new RegisterCommandHandler(_mockAuthenticationService.Object);
             _validator = new RegisterCommandValidator(_mockAuthenticationService.Object);
         }

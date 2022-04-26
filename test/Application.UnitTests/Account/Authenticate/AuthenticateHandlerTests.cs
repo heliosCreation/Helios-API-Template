@@ -15,16 +15,13 @@ using static UnitTests.Utils.IdentitySet.AccountSet;
 
 namespace Application.UnitTests.Account.Authenticate
 {
-    public class AuthenticateHandlerTests
+    public class AuthenticateHandlerTests : AccountBaseTest
     {
         private readonly AuthenticateCommandHandler _handler;
         private readonly AuthenticateCommandValidator _validator;
-        private readonly Mock<IAuthenticationService> _mockAuthenticationService;
 
         public AuthenticateHandlerTests()
         {
-            _mockAuthenticationService = new MockAuthenticationService().GetEntityRepository();
-
             _handler = new AuthenticateCommandHandler(_mockAuthenticationService.Object);
             _validator = new AuthenticateCommandValidator();
         }

@@ -1,15 +1,9 @@
-﻿using Application.UnitTests.Mocks.Identity;
-using Moq;
-using Shouldly;
-using System;
+﻿using Shouldly;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Template.Application;
-using Template.Application.Contracts.Identity;
 using Template.Application.Features.Account.Command.ForgotPassword;
 using Template.Application.Responses;
 using Xunit;
@@ -17,15 +11,13 @@ using static UnitTests.Utils.IdentitySet.AccountSet;
 
 namespace Application.UnitTests.Account.ForgotPassword
 {
-    public class ForgotPasswordCommandHandlerTest
+    public class ForgotPasswordCommandHandlerTest : AccountBaseTest
     {
         private readonly ForgotPasswordCommandHandler _handler;
         private readonly ForgotPasswordCommandValidator _validator;
-        private readonly Mock<IAuthenticationService> _mockAuthenticationService;
 
         public ForgotPasswordCommandHandlerTest()
         {
-            _mockAuthenticationService = new MockAuthenticationService().GetEntityRepository();
 
             _handler = new ForgotPasswordCommandHandler(_mockAuthenticationService.Object);
             _validator = new ForgotPasswordCommandValidator();

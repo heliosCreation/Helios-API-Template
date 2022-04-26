@@ -14,16 +14,13 @@ using static UnitTests.Utils.IdentitySet.AccountSet;
 
 namespace Application.UnitTests.Account.ConfirmEmail
 {
-    public class ConfirmEmailCommandHandlerTest
+    public class ConfirmEmailCommandHandlerTest : AccountBaseTest
     {
         private readonly ConfirmEmailCommandHandler _handler;
         private readonly ConfirmEmailCommandValidator _validator;
-        private readonly Mock<IAuthenticationService> _mockAuthenticationService;
 
         public ConfirmEmailCommandHandlerTest()
         {
-            _mockAuthenticationService = new MockAuthenticationService().GetEntityRepository();
-
             _handler = new ConfirmEmailCommandHandler(_mockAuthenticationService.Object);
             _validator = new ConfirmEmailCommandValidator();
         }
