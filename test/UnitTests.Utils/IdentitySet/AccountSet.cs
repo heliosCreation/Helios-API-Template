@@ -60,5 +60,21 @@ namespace UnitTests.Utils.IdentitySet
         }
 
         #endregion
+
+        #region forgotPassword
+        public class ForgotPassword_BadRequest_Command : IEnumerable<object[]>
+        {
+            private readonly List<object[]> _data = new List<object[]>
+            {
+                new object[] {""},
+                new object[] {null},
+                new object[] {"wrongEmailFormat"},
+            };
+
+            public IEnumerator<object[]> GetEnumerator() => _data.GetEnumerator();
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            #endregion
+        }
     }
 }

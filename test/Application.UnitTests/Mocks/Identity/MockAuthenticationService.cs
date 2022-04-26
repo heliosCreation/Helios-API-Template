@@ -52,6 +52,13 @@ namespace Application.UnitTests.Mocks.Identity
             MockService.Setup(s => s.ConfirmEmail(It.IsAny<ConfirmEmailCommand>())).ReturnsAsync(new ApiResponse<object>());
             #endregion
 
+            #region forgotPassword
+            MockService.Setup(s => s.GeneratePasswordForgottenMailToken(It.IsAny<string>())).ReturnsAsync(Guid.NewGuid().ToString());
+            MockService.Setup(s => s.GeneratePasswordForgottenMailToken(It.Is<string>(s => s == "Error2@error.com"))).ReturnsAsync((string)null);
+            #endregion
+
+            MockService.Setup(s => s.GetUserIdAsync(It.IsAny<string>())).ReturnsAsync(Guid.NewGuid().ToString());
+            MockService.Setup(s => s.GetUserIdAsync(It.Is<string>(s => s == "Error@error.com"))).ReturnsAsync((string)null);
             #region private methods
             MockService.Setup(s => s.UsernameExist(It.IsAny<string>())).ReturnsAsync(true);
             MockService.Setup(s => s.UsernameExist(It.Is<string>(n => n == "Exist"))).ReturnsAsync(false);
