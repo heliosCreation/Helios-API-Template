@@ -17,7 +17,14 @@ namespace Template.Application.Features.Account.Command.ResetPassword
         }
         public async Task<ApiResponse<object>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
         {
-            return await _authenticationService.ResetPassword(request);
+            var response = new ApiResponse<object>();
+            var result =  await _authenticationService.ResetPassword(request);
+            if (!result.IsSuccess)
+            {
+                return response.SetBadRequestResponse(result.ErrorMessage);
+            }
+            return response; 
+
         }
     }
 }

@@ -11,6 +11,7 @@ using Template.Application.Features.Account.Command.ConfirmEmail;
 using Template.Application.Features.Account.Command.RefreshToken;
 using Template.Application.Features.Account.Command.Register;
 using Template.Application.Features.Account.Command.RegistrationToken;
+using Template.Application.Features.Account.Command.ResetPassword;
 using Template.Application.Responses;
 
 namespace Application.UnitTests.Mocks.Identity
@@ -68,6 +69,12 @@ namespace Application.UnitTests.Mocks.Identity
             MockService.Setup(s => s.GeneratePasswordForgottenMailToken(It.IsAny<string>())).ReturnsAsync(Guid.NewGuid().ToString());
             MockService.Setup(s => s.GeneratePasswordForgottenMailToken(It.Is<string>(s => s == "Error2@error.com"))).ReturnsAsync((string)null);
             #endregion
+
+            #region resetPassword
+            MockService.Setup(s => s.ResetPassword(It.IsAny<ResetPasswordCommand>())).ReturnsAsync(new ResetPasswordResponse { IsSuccess = true });
+            MockService.Setup(s => s.ResetPassword(It.Is<ResetPasswordCommand>(c => c.Uid == "testError"))).ReturnsAsync(new ResetPasswordResponse { IsSuccess = false, ErrorMessage ="test error" });
+            #endregion
+
 
             MockService.Setup(s => s.GetUserIdAsync(It.IsAny<string>())).ReturnsAsync(Guid.NewGuid().ToString());
             MockService.Setup(s => s.GetUserIdAsync(It.Is<string>(s => s == "Error@error.com"))).ReturnsAsync((string)null);

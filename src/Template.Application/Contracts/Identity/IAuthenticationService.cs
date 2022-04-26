@@ -23,6 +23,6 @@ namespace Template.Application.Contracts.Identity
         Task<bool> UsernameExist(string name);
         Task<string> GetUserIdAsync(string email);
         Task<string> GeneratePasswordForgottenMailToken(string email);
-        Task<ApiResponse<object>> ResetPassword(ResetPasswordCommand request);
+        Task<ResetPasswordResponse> ResetPassword(ResetPasswordCommand request);
     }
 }
