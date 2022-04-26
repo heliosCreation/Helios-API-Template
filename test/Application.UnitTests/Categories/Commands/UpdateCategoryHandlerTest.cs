@@ -16,40 +16,26 @@ using Template.Application.Responses;
 using Xunit;
 using static UnitTests.Utils.DataSet.CategorySet;
 
-namespace GloboEvent.Application.UnitTests.Categories.Commands
+namespace Application.UnitTests.Categories.Commands
 {
-    public class UpdateCategoryHandlerTest
+    public class UpdateCategoryHandlerTest : CategoryUnitTestBase
     {
-        private readonly IMapper _mapper;
-        private readonly Mock<ICategoryRepository> _mockCategoryRepository;
         private readonly UpdateCategoryCommandHandler _handler;
         private readonly UpdateCategoryCommandValidator _validator;
+        private readonly RequestHandlerHelper<UpdateCategoryCommand, UpdateCategoryCommandHandler, UpdateCategoryCommandValidator, ApiResponse<object>> _helper;
 
         public UpdateCategoryHandlerTest()
         {
-            var configurationProvider = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            });
-            _mapper = configurationProvider.CreateMapper();
-
-            _mockCategoryRepository = new MockCategoryRepository().GetEntityRepository();
             _handler = new UpdateCategoryCommandHandler(_mockCategoryRepository.Object, _mapper);
             _validator = new UpdateCategoryCommandValidator(_mockCategoryRepository.Object);
+            _helper = new RequestHandlerHelper<UpdateCategoryCommand, UpdateCategoryCommandHandler, UpdateCategoryCommandValidator, ApiResponse<object>>();
         }
 
         [Fact]
         public async Task Handle_UpdateCategory_WhenValid_UpdatesAndReturnCorrectApiResponse()
         {
             var command = new UpdateCategoryCommand() { Name = "Test", Id = CategoryId1 };
-            var validationBehavior = new ValidationBehaviour<UpdateCategoryCommand, ApiResponse<object>>(new List<UpdateCategoryCommandValidator>()
-            {
-                _validator
-            });
-            var result = await validationBehavior.Handle(command, CancellationToken.None, () =>
-            {
-                return _handler.Handle(command, CancellationToken.None);
-            });
+            var result = await _helper.HandleRequest(command, _handler, _validator);
 
             result.StatusCode.ShouldBe((int)HttpStatusCode.OK);
             var Gethandler = new GetCategoryWithEventsQueryHandler(_mapper, _mockCategoryRepository.Object);
@@ -63,14 +49,8 @@ namespace GloboEvent.Application.UnitTests.Categories.Commands
         public async Task Handle_UpdateCategory_WhenInvalidDataArePassed_ReturnsAppropriateResponse_AndDoesNotUpdate(Guid id, string data, int status)
         {
             var command = new UpdateCategoryCommand() { Name = data, Id = id };
-            var validationBehavior = new ValidationBehaviour<UpdateCategoryCommand, ApiResponse<object>>(new List<UpdateCategoryCommandValidator>()
-            {
-                _validator
-            });
-            var result = await validationBehavior.Handle(command, CancellationToken.None, () =>
-            {
-                return _handler.Handle(command, CancellationToken.None);
-            });
+            var result = await _helper.HandleRequest(command, _handler, _validator);
+
 
             result.StatusCode.ShouldBe(status);
             var Gethandler = new GetCategoryWithEventsQueryHandler(_mapper, _mockCategoryRepository.Object);

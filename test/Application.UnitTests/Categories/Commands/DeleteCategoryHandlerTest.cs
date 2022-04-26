@@ -1,28 +1,21 @@
-﻿using Application.UnitTests.Mocks;
-using Moq;
-using Shouldly;
+﻿using Shouldly;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Template.Application.Contrats.Persistence;
 using Template.Application.Features.Categories.Commands.Delete;
 using UnitTests.Utils.DataSet;
 using Xunit;
 
-namespace GloboEvent.Application.UnitTests.Categories.Commands
+namespace Application.UnitTests.Categories.Commands
 {
     using static CategorySet;
-    public class DeleteCategoryHandlerTest
+    public class DeleteCategoryHandlerTest : CategoryUnitTestBase
     {
-        private readonly Mock<ICategoryRepository> _mockCategoryRepository;
         private readonly DeleteCategoryCommandHandler _handler;
 
         public DeleteCategoryHandlerTest()
         {
-            _mockCategoryRepository = new MockCategoryRepository().GetEntityRepository();
             _handler = new DeleteCategoryCommandHandler(_mockCategoryRepository.Object);
-
-
         }
 
 
