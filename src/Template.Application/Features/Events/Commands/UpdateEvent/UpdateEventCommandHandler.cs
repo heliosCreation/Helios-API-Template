@@ -32,8 +32,11 @@ namespace Template.Application.Features.Events.Commands.UpdateEvent
                 return response.setNotFoundResponse();
             }
             _mapper.Map(request, eventToUpdate, typeof(UpdateEventCommand), typeof(Event));
-            await _eventRepository.UpdateAsync(eventToUpdate);
-
+            var success = await _eventRepository.UpdateAsync(eventToUpdate);
+            if (! success)
+            {
+                return response.SetInternalServerErrorResponse("There was an error trying to save your data. If the problem persists, contact an administrator");
+            }
             return response;
 
         }

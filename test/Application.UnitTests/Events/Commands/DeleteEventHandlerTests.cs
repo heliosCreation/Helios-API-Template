@@ -10,15 +10,13 @@ using Template.Application.Features.Events.Commands.DeleteEvent;
 using Xunit;
 using static UnitTests.Utils.DataSet.EventSet;
 
-namespace GloboEvent.Application.UnitTests.Events.Commands
+namespace Application.UnitTests.Events.Commands
 {
-    public class DeleteEventHandlerTests
+    public class DeleteEventHandlerTests : EventUnitTestBase
     {
-        private readonly Mock<IEventRepository> _mockEventRepository;
         private readonly DeleteEventCommandHandler _handler;
         public DeleteEventHandlerTests()
         {
-            _mockEventRepository = new MockEventRepository().GetEntityRepository();
             _handler = new DeleteEventCommandHandler(_mockEventRepository.Object);
         }
 

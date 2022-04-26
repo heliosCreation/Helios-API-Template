@@ -1,44 +1,28 @@
-﻿using Application.UnitTests.Mocks;
-using AutoMapper;
-using Moq;
-using Shouldly;
+﻿using Shouldly;
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
-using Template.Application;
-using Template.Application.Contrats.Persistence;
 using Template.Application.Features.Events.Commands.CreateEvent;
-using Template.Application.Profiles;
 using Template.Application.Responses;
 using Xunit;
 using static UnitTests.Utils.DataSet.EventSet;
 
 namespace Application.UnitTests.Events.Commands
 {
-    public class CreateEventHandlerTests
+    public class CreateEventHandlerTests : EventUnitTestBase
     {
-        private readonly IMapper _mapper;
-        private readonly Mock<IEventRepository> _mockEventRepository;
-        private readonly Mock<ICategoryRepository> _mockCategoryRepository;
         private readonly CreateEventCommandHandler _handler;
         private readonly CreateEventCommandValidator _validator;
+        private readonly RequestHandlerHelper<CreateEventCommand, CreateEventCommandHandler, CreateEventCommandValidator, ApiResponse<CreateEventResponse>> _helper;
         public CreateEventHandlerTests()
         {
-            var configurationProvider = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            });
-            _mapper = configurationProvider.CreateMapper();
-            _mockCategoryRepository = new MockCategoryRepository().GetEntityRepository();
-            _mockEventRepository = new MockEventRepository().GetEntityRepository();
             _handler = new CreateEventCommandHandler(_mapper, _mockEventRepository.Object);
             _validator = new CreateEventCommandValidator(_mockEventRepository.Object, _mockCategoryRepository.Object);
+            _helper = new RequestHandlerHelper<CreateEventCommand, CreateEventCommandHandler, CreateEventCommandValidator, ApiResponse<CreateEventResponse>>();
         }
 
         [Fact]
-        public async Task Handle_EventWhenValid_IsAddedToRepo()
+        public async Task Handle_EventWhenValid_ReturnCorrectStatusAndData_AndIsAddedToRepo()
         {
             var command = new CreateEventCommand()
             {
@@ -47,14 +31,12 @@ namespace Application.UnitTests.Events.Commands
                 Price = NewEvent.Price,
                 CategoryId = NewEvent.CategoryId
             };
-            var validationBehavior = new ValidationBehaviour<CreateEventCommand, ApiResponse<CreateEventResponse>>(new List<CreateEventCommandValidator>()
-            {
-                _validator
-            });
-            await validationBehavior.Handle(command, CancellationToken.None, () =>
-            {
-                return _handler.Handle(command, CancellationToken.None);
-            });
+
+            var result = await _helper.HandleRequest(command, _handler, _validator);
+
+            result.StatusCode.ShouldBe((int)HttpStatusCode.OK);
+            result.Data.ShouldNotBeNull();
+            result.Data.ShouldBeOfType<ApiResponse<CreateEventResponse>>();
 
             var allEvents = await _mockEventRepository.Object.ListAllAsync();
             allEvents.Count.ShouldBe(3);
@@ -71,16 +53,11 @@ namespace Application.UnitTests.Events.Commands
                 Price = price,
                 CategoryId = id
             };
-            var validationBehavior = new ValidationBehaviour<CreateEventCommand, ApiResponse<CreateEventResponse>>(new List<CreateEventCommandValidator>()
-            {
-                _validator
-            });
-            var result = await validationBehavior.Handle(command, CancellationToken.None, () =>
-            {
-                return _handler.Handle(command, CancellationToken.None);
-            });
+
+            var result = await _helper.HandleRequest(command, _handler, _validator);
 
             result.StatusCode.ShouldBe((int)HttpStatusCode.BadRequest);
+            result.Data.ShouldBeNull();
 
             var allEvents = await _mockEventRepository.Object.ListAllAsync();
             allEvents.Count.ShouldBe(2);

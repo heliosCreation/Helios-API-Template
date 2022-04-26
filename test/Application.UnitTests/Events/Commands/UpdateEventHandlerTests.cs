@@ -1,45 +1,32 @@
-﻿using Application.UnitTests.Mocks;
-using AutoMapper;
-using Moq;
-using Shouldly;
+﻿using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Template.Application;
-using Template.Application.Contrats.Persistence;
 using Template.Application.Features.Events.Commands.UpdateEvent;
-using Template.Application.Profiles;
 using Template.Application.Responses;
 using Xunit;
 using static UnitTests.Utils.DataSet.EventSet;
 
-namespace GloboEvent.Application.UnitTests.Events.Commands
+namespace Application.UnitTests.Events.Commands
 {
-    public class UpdateEventHandlerTests
+    public class UpdateEventHandlerTests : EventUnitTestBase
     {
-        private readonly IMapper _mapper;
-        private readonly Mock<ICategoryRepository> _mockCategoryRepository;
-        private readonly Mock<IEventRepository> _mockEventRepository;
         private readonly UpdateEventCommandHandler _handler;
         private readonly UpdateEventCommandValidator _validator;
+        private readonly RequestHandlerHelper<UpdateEventCommand, UpdateEventCommandHandler, UpdateEventCommandValidator, ApiResponse<object>> _helper;
+
         public UpdateEventHandlerTests()
         {
-            var configurationProvider = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            });
-            _mapper = configurationProvider.CreateMapper();
-
-            _mockEventRepository = new MockEventRepository().GetEntityRepository();
-            _mockCategoryRepository = new MockCategoryRepository().GetEntityRepository();
             _handler = new UpdateEventCommandHandler(_mapper, _mockEventRepository.Object);
             _validator = new UpdateEventCommandValidator(_mockEventRepository.Object, _mockCategoryRepository.Object);
+            _helper = new RequestHandlerHelper<UpdateEventCommand, UpdateEventCommandHandler, UpdateEventCommandValidator, ApiResponse<object>>();
         }
 
         [Fact]
-        public async Task Handle_EventWhenValid_UpdatesRepo()
+        public async Task Handle_EventWhenValid_UpdatesRepo_AndReturnsOkStatusCode()
         {
             var command = new UpdateEventCommand
             {
@@ -49,14 +36,8 @@ namespace GloboEvent.Application.UnitTests.Events.Commands
                 Price = NewEvent.Price,
                 CategoryId = NewEvent.CategoryId
             };
-            var validationBehavior = new ValidationBehaviour<UpdateEventCommand, ApiResponse<object>>(new List<UpdateEventCommandValidator>()
-            {
-                _validator
-            });
-            var result = await validationBehavior.Handle(command, CancellationToken.None, () =>
-            {
-                return _handler.Handle(command, CancellationToken.None);
-            });
+
+            var result = _helper.HandleRequest(command, _handler, _validator);
 
             var target = await _mockEventRepository.Object.GetByIdAsync(EventId1);
             target.Name.ShouldBe(NewEvent.Name);
@@ -78,16 +59,10 @@ namespace GloboEvent.Application.UnitTests.Events.Commands
                 CategoryId = categoryId
             };
 
-            var validationBehavior = new ValidationBehaviour<UpdateEventCommand, ApiResponse<object>>(new List<UpdateEventCommandValidator>()
-            {
-                _validator
-            });
-            var result = await validationBehavior.Handle(command, CancellationToken.None, () =>
-            {
-                return _handler.Handle(command, CancellationToken.None);
-            });
+            var result = await _helper.HandleRequest(command, _handler, _validator);
 
             result.StatusCode.ShouldBe((int)HttpStatusCode.BadRequest);
+
             var target = await _mockEventRepository.Object.GetByIdAsync(EventId1);
             target.Name.ShouldBe(EventName1);
         }
@@ -103,14 +78,8 @@ namespace GloboEvent.Application.UnitTests.Events.Commands
                 Price = NewEvent.Price,
                 CategoryId = NewEvent.CategoryId
             };
-            var validationBehavior = new ValidationBehaviour<UpdateEventCommand, ApiResponse<object>>(new List<UpdateEventCommandValidator>()
-            {
-                _validator
-            });
-            var result = await validationBehavior.Handle(command, CancellationToken.None, () =>
-            {
-                return _handler.Handle(command, CancellationToken.None);
-            });
+
+            var result = await _helper.HandleRequest(command, _handler, _validator);
             var target = await _mockEventRepository.Object.GetByIdAsync(EventId1);
 
 
