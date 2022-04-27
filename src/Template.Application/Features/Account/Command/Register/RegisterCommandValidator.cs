@@ -7,11 +7,11 @@ using Template.Application.Contracts.Identity;
 namespace Template.Application.Features.Account.Command.Register
 {
 
-    public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
+    public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
     {
         private readonly IAuthenticationService _authenticationService;
 
-        public RegisterUserCommandValidator(IAuthenticationService categoryRepository)
+        public RegisterCommandValidator(IAuthenticationService categoryRepository)
         {
             _authenticationService = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
 
@@ -51,14 +51,14 @@ namespace Template.Application.Features.Account.Command.Register
 
         }
 
-        private async Task<bool> IsNameUnique(RegisterUserCommand e, CancellationToken c)
+        private async Task<bool> IsNameUnique(RegisterCommand e, CancellationToken c)
         {
             return !await _authenticationService.UsernameExist(e.UserName);
         }
 
-        private async Task<bool> IsEmailUnique(RegisterUserCommand e, CancellationToken c)
+        private async Task<bool> IsEmailUnique(RegisterCommand e, CancellationToken c)
         {
-            return !await _authenticationService.UserEmailExist(e.UserName);
+            return !await _authenticationService.UserEmailExist(e.Email);
         }
     }
 }

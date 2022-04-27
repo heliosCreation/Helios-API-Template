@@ -56,6 +56,7 @@ namespace Template.Identity.Services
             if (user == null)
             {
                 response.IsSuccess = false;
+                response.ErrorMessage = "No user found that was associated to this email.";
                 return response;
             }
 
@@ -109,7 +110,7 @@ namespace Template.Identity.Services
 
             return response;
         }
-        public async Task<RegistrationResponse> RegisterAsync(RegisterUserCommand command)
+        public async Task<RegistrationResponse> RegisterAsync(RegisterCommand command)
         {
             var user = new ApplicationUser
             {
@@ -162,16 +163,15 @@ namespace Template.Identity.Services
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             return token;
         }
-        public async Task<ApiResponse<object>> ResetPassword(ResetPasswordCommand request)
+        public async Task<ResetPasswordResponse> ResetPassword(ResetPasswordCommand request)
         {
-            var response = new ApiResponse<object>();
             var user = await _userManager.FindByIdAsync(request.Uid);
             var result =  await _userManager.ResetPasswordAsync(user, request.ResetToken, request.NewPassword);
             if (!result.Succeeded)
             {
-                return response.SetBadRequestResponse("The combination UID/TOKEN was wrong");
+                return new ResetPasswordResponse("The combination UID/TOKEN was wrong");
             }
-            return response; 
+            return new ResetPasswordResponse(); 
         }
 
         public async Task<string> GetUserIdAsync(string email)

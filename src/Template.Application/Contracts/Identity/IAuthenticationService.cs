@@ -12,7 +12,7 @@ namespace Template.Application.Contracts.Identity
 {
     public interface IAuthenticationService
     {
-        Task<RegistrationResponse> RegisterAsync(RegisterUserCommand command);
+        Task<RegistrationResponse> RegisterAsync(RegisterCommand command);
         Task<RegistrationTokenResponse> GenerateRegistrationEncodedToken(string id);
         Task<ApiResponse<object>> ConfirmEmail(ConfirmEmailCommand request);
         Task<AuthenticationResponse> AuthenticateAsync(AuthenticateCommand request);
@@ -23,6 +23,6 @@ namespace Template.Application.Contracts.Identity
         Task<bool> UsernameExist(string name);
         Task<string> GetUserIdAsync(string email);
         Task<string> GeneratePasswordForgottenMailToken(string email);
-        Task<ApiResponse<object>> ResetPassword(ResetPasswordCommand request);
+        Task<ResetPasswordResponse> ResetPassword(ResetPasswordCommand request);
     }
 }

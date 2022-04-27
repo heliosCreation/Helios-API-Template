@@ -12,7 +12,7 @@ namespace Template.Application.Contrats.Persistence
 
         Task<T> AddAsync(T entity);
 
-        Task UpdateAsync(T entity);
+        Task<bool> UpdateAsync(T entity);
 
         Task DeleteAsync(T entity);
 

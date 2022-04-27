@@ -38,10 +38,10 @@ namespace Template.Persistence.Repositories
             return await _dbContext.Set<T>().ToListAsync();
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task<bool> UpdateAsync(T entity)
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            return await _dbContext.SaveChangesAsync() > 0;
         }
     }
 }
