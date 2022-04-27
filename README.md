@@ -74,3 +74,36 @@ The "-o "ProjectName" matters a lot, since this parameter will be use to name th
 <kbd>
   ![combine_images](https://user-images.githubusercontent.com/71494857/165505273-f705fc9e-3c02-4f9b-ab10-3e958a2cc79f.jpg)
 <kbd>
+
+## 🔥: Application preview
+  
+<details>
+  <summary>Reveal preview </summary>
+  
+  <kbd>
+  <img src="https://user-images.githubusercontent.com/71494857/165506590-145c5951-aebe-4f63-9d51-694a3abc9599.png" alt="Application preview"/>
+  </kbd>
+</details>
+
+  
+  
+  ##### And that wraps it up ! 
+  
+  ## Author
+
+👤 **Quentin Couissinier**
+
+- Linkedin: [@Quentin Couissinier](https://www.linkedin.com/in/quentin-couissinier/)
+- Github: [@Quentin Couissinier](https://github.com/heliosCreation)
+
+## Show your support
+
+Please ⭐️ this repository if you liked the project!
+
+
+## 📝 License
+
+Copyright © 2022 [@Quentin Couissinier](https://github.com/heliosCreation).<br />
+This project is [MIT](https://github.com/heliosCreation/BugsTracker/blob/main/LICENSE) licensed.
+
+---
