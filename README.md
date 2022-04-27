@@ -69,3 +69,8 @@ You will be prompted with a message stating that the operation went well:
 <kbd>
   <img width="386" alt="validation" src="https://user-images.githubusercontent.com/71494857/165504188-25740a73-c9ed-49d1-b57c-7ccb6da9fc02.PNG">
 </kbd>
+
+The "-o "ProjectName" matters a lot, since this parameter will be use to name the projects in your newly instantiated solution.
+<kbd>
+  ![combine_images](https://user-images.githubusercontent.com/71494857/165505273-f705fc9e-3c02-4f9b-ab10-3e958a2cc79f.jpg)
+<kbd>
