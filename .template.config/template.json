@@ -3,8 +3,8 @@
   "author": "Quentin Couissinier",
   "classifications": [ "WebApi", "Clean architecture", ".Net5" ],
   "identity": "Template",
-  "name": "Quentin Couissinier API template",
-  "shortName": "QC_API_Template",
+  "name": "Helios clean architecture API template",
+  "shortName": "HCA_API",
   "sourceName": "Template",
   "tags": {
     "language": "C#",
