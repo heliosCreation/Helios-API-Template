@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Quentin Couissinier",
+  "classifications": [ "WebApi", "Clean architecture", ".Net5" ],
+  "identity": "Template",
+  "name": "Quentin Couissinier API template",
+  "shortName": "QC_API_Template",
+  "sourceName": "Template",
+  "tags": {
+    "language": "C#",
+    "type": "Project"
+  },
+  "preferNameDirectory": true,
+  "primaryOutputs": [
+    {
+      "path": "src\\Template.API\\Template.API.csproj"
+    },
+    {
+      "path": "src\\Template.Application\\Template.Application.csproj"
+    },
+    {
+      "path": "src\\Template.Domain\\Template.Domain.csproj"
+    },
+    {
+      "path": "src\\Template.Identity\\Template.Identity.csproj"
+    },
+    {
+      "path": "src\\Template.Persistence\\Template.Persistence.csproj"
+    },
+    {
+      "path": "src\\Template.Infrastructure\\Template.Infrastructure.csproj"
+    },
+
+    {
+      "path": "test\\API.IntegrationTests\\API.IntegrationTests.csproj"
+    },
+    {
+      "path": "test\\Application.UnitTests\\Application.UnitTests.csproj"
+    },
+    {
+      "path": "test\\Persistence.IntegrationTests\\Persistence.IntegrationTests.csproj"
+    },
+    {
+      "path": "test\\UnitTests.Utils\\UnitTests.Utils.csproj"
+    }
+
+  ],
+  "exclude": [ "**/[Bb]in/**", "**/[Oo]bj/**", ".template.config/**/*", "**/*.lock.json" ]
+}
