@@ -100,8 +100,8 @@ namespace Template.API
                         Description = "This Api will be responsible for overall data distribution and authorization.",
                         Contact = new OpenApiContact
                         {
-                            Name = "HeliosCreation",
-                            Email = "reliableDevelopment@hotmail.com",
+                            Name = "Template",
+                            Email = "Template@hotmail.com",
                         }
                     });
 
