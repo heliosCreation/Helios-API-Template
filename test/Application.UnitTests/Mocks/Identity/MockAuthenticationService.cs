@@ -80,10 +80,10 @@ namespace Application.UnitTests.Mocks.Identity
             MockService.Setup(s => s.GetUserIdAsync(It.Is<string>(s => s == "Error@error.com"))).ReturnsAsync((string)null);
             #region private methods
             MockService.Setup(s => s.UsernameExist(It.IsAny<string>())).ReturnsAsync(true);
-            MockService.Setup(s => s.UsernameExist(It.Is<string>(n => n == "Exist"))).ReturnsAsync(false);
+            MockService.Setup(s => s.UsernameExist(It.Is<string>(n => n == "free"))).ReturnsAsync(false);
 
             MockService.Setup(s => s.UserEmailExist(It.IsAny<string>())).ReturnsAsync(true);
-            MockService.Setup(s => s.UserEmailExist(It.Is<string>(e => e == "Exist@test.com"))).ReturnsAsync(false);
+            MockService.Setup(s => s.UserEmailExist(It.Is<string>(e => e == "free@test.com"))).ReturnsAsync(false);
             #endregion
 
             return MockService;

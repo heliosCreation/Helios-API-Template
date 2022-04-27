@@ -49,7 +49,7 @@ namespace Application.UnitTests.Account.ForgotPassword
             result.StatusCode.ShouldBe((int)HttpStatusCode.NotFound);
             result.ErrorMessages.ShouldNotBeEmpty();
             result.Data.ShouldBeNull();
-            result.DataList.ShouldBeEmpty();
+            result.DataList.ShouldBeNull();
         }
 
         [Fact]

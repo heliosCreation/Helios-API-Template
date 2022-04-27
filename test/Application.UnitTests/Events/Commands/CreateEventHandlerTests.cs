@@ -34,9 +34,9 @@ namespace Application.UnitTests.Events.Commands
 
             var result = await _helper.HandleRequest(command, _handler, _validator);
 
+            result.ShouldBeOfType<ApiResponse<CreateEventResponse>>();
             result.StatusCode.ShouldBe((int)HttpStatusCode.OK);
             result.Data.ShouldNotBeNull();
-            result.Data.ShouldBeOfType<ApiResponse<CreateEventResponse>>();
 
             var allEvents = await _mockEventRepository.Object.ListAllAsync();
             allEvents.Count.ShouldBe(3);

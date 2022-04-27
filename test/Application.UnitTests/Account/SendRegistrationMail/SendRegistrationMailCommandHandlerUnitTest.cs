@@ -29,7 +29,6 @@ namespace Application.UnitTests.Account.SendRegistrationMail
 
             result.ShouldBeOfType<ApiResponse<object>>();
             result.StatusCode.ShouldBe((int)HttpStatusCode.OK);
-            result.Data.ShouldNotBeNull();
         }
 
         [Fact]

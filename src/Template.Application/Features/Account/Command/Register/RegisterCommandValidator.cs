@@ -58,7 +58,7 @@ namespace Template.Application.Features.Account.Command.Register
 
         private async Task<bool> IsEmailUnique(RegisterCommand e, CancellationToken c)
         {
-            return !await _authenticationService.UserEmailExist(e.UserName);
+            return !await _authenticationService.UserEmailExist(e.Email);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Application.UnitTests.Account.Register
         [Fact]
         public async Task Handle_WhenInputIsValid_ReturnsSuccess_AndData()
         {
-            var command = new RegisterCommand() { Email = "Test@test.com", Password = "Pwd12345!", ConfirmationPassword = "Pwd12345!", FirstName = "John", LastName = "Doe", UserName = "JohnDoe" };
+            var command = new RegisterCommand() { Email = "free@test.com", Password = "Pwd12345!", ConfirmationPassword = "Pwd12345!", FirstName = "John", LastName = "Doe", UserName = "free" };
             var result = await _helper.HandleRequest(command, _handler, _validator);
 
 
