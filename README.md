@@ -51,7 +51,7 @@ https://github.com/heliosCreation/Helios-API-Template.git
 
 ### Step 2: Create template locally
 Navigate to the root folder of the project containing the .template.config folder. <br/>
-Open the command line interface in the current location and type: 
+Open the command line prompt in the current location and type: 
 ```sh
 dotnet new --install .
 ```
@@ -60,3 +60,12 @@ This should create the local template ready to be used as shown in the caption b
   <img width="947" alt="DotnetTemplates" src="https://user-images.githubusercontent.com/71494857/165502996-3cea7c22-232b-4ad7-90cf-71cafc683762.PNG">
 </kbd>
 
+### Step 3: Use the template
+Navigate to the location you want to instantiate the project to, open the command line prompt: and type:
+```sh
+dotnet new HCA_API -o "ProjectName"
+```
+You will be prompted with a message stating that the operation went well: 
+<kbd>
+  <img width="386" alt="validation" src="https://user-images.githubusercontent.com/71494857/165504188-25740a73-c9ed-49d1-b57c-7ccb6da9fc02.PNG">
+</kbd>
