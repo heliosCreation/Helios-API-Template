@@ -12,6 +12,10 @@ namespace Application.UnitTests.Mocks.Infrastructure
             MockService.Setup(s => s.SendForgotPasswordMail(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
             MockService.Setup(s => s.SendForgotPasswordMail(It.Is<string>(s => s == "test@Error.com"), It.IsAny<string>())).ReturnsAsync(false);
 
+
+            MockService.Setup(s => s.SendRegistrationMail(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
+            MockService.Setup(s => s.SendRegistrationMail(It.Is<string>(s => s == "test@Error.com"), It.IsAny<string>())).ReturnsAsync(false);
+
             return MockService;
         }
 
